@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_tra_bien_so"
+        android:icon="@android:drawable/ic_dialog_info"
+        android:title="Tra Biển Số" />
+
+    <item
+        android:id="@+id/nav_tra_nguoi_lai"
+        android:icon="@android:drawable/ic_menu_recent_history"
+        android:title="Tra Người Lái" />
+
+    <item
+        android:id="@+id/nav_thong_tin_user"
+        android:icon="@android:drawable/ic_menu_my_calendar"
+        android:title="Thông Tin User" />
+</menu>
