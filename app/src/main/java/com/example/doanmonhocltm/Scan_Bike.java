@@ -29,6 +29,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.text.TextRecognition;
@@ -50,6 +51,7 @@ public class Scan_Bike extends AppCompatActivity {
     private TextView tvLicensePlate;
     private Button btnCapture;
     private Button btnConfirm;
+    private FloatingActionButton btnBack;
 
     private ExecutorService cameraExecutor;
     private ImageCapture imageCapture;
@@ -65,6 +67,12 @@ public class Scan_Bike extends AppCompatActivity {
         tvLicensePlate = findViewById(R.id.tvLicensePlate);
         btnCapture = findViewById(R.id.btnCapture);
         btnConfirm = findViewById(R.id.btnConfirm);
+        btnBack = findViewById(R.id.btnBack);
+
+        // Thiết lập nút quay lại
+        btnBack.setOnClickListener(v -> {
+            finish(); // Kết thúc activity hiện tại và quay lại activity trước đó
+        });
 
         // Khởi tạo text recognizer
         textRecognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
