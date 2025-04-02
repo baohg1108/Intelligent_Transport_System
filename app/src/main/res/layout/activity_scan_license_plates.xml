@@ -13,21 +13,21 @@
         android:id="@+id/userProfileContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
         android:background="#FFFFFF"
         android:gravity="center_vertical"
-        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <!-- Avatar -->
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/userAvatar"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:src="@android:drawable/ic_menu_myplaces"
-            android:layout_marginEnd="16dp"/>
+            android:layout_marginEnd="16dp"
+            android:src="@android:drawable/ic_menu_myplaces" />
 
         <!-- User Info -->
         <LinearLayout
@@ -42,16 +42,16 @@
                 android:text="Nguyễn Văn A"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                tools:ignore="HardcodedText"/>
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/userPosition"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Nhân Viên Tra Cứu"
-                android:textSize="14sp"
                 android:textColor="#666666"
-                tools:ignore="HardcodedText"/>
+                android:textSize="14sp"
+                tools:ignore="HardcodedText" />
         </LinearLayout>
     </LinearLayout>
 
@@ -96,11 +96,13 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
+
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp">
+                    android:layout_marginBottom="16dp"
+                    app:endIconMode="clear_text">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/editTextLicensePlate"
