@@ -218,8 +218,14 @@ public class Scan_Bike extends AppCompatActivity {
         // Mẫu cho biển số xe ô tô: ví dụ 29A-123.45
         String carRegex = "\\b(\\d{2}[A-Z]-\\d{3}\\.\\d{2})\\b";
 
-        // Mẫu cho biển số xe máy: ví dụ 59-D1 23456
-        String motorbikeRegex = "\\b(\\d{2}-[A-Z]\\d\\s?\\d{5})\\b";
+        // Mẫu cho biển số xe máy: ví dụ 59-D1 23456 hoặc 85-AA 12345
+        String motorbikeRegex = "\\b(\\d{2}\\s*-\\s*([A-Z]\\d|[A-Z]{2})\\s*\\d{5})\\b";
+
+        // Mẫu cho biển số xe máy 50cc: ví dụ 59-MĐ1 23456
+        String moped50ccRegex = "\\b(\\d{2}\\s*-\\s*MĐ\\d\\s*\\d{5})\\b";
+
+        // Mẫu cho biển số xe máy điện: ví dụ 59-MĐ1 23456, 59-ĐK1 23456 hoặc 85-MD1 67891
+        String electricBikeRegex = "\\b(\\d{2}\\s*-\\s*(MĐ|ĐK|MD)\\d\\s*\\d{5})\\b";
 
         // Thử tìm biển số xe ô tô trước
         Pattern carPattern = Pattern.compile(carRegex);
@@ -228,7 +234,21 @@ public class Scan_Bike extends AppCompatActivity {
             return carMatcher.group(0);
         }
 
-        // Nếu không tìm thấy biển số xe ô tô, thử tìm biển số xe máy
+        // Tìm biển số xe máy điện
+        Pattern electricBikePattern = Pattern.compile(electricBikeRegex);
+        Matcher electricBikeMatcher = electricBikePattern.matcher(text);
+        if (electricBikeMatcher.find()) {
+            return electricBikeMatcher.group(0);
+        }
+
+        // Tìm biển số xe máy 50cc
+        Pattern moped50ccPattern = Pattern.compile(moped50ccRegex);
+        Matcher moped50ccMatcher = moped50ccPattern.matcher(text);
+        if (moped50ccMatcher.find()) {
+            return moped50ccMatcher.group(0);
+        }
+
+        // Tìm biển số xe máy thông thường
         Pattern motorbikePattern = Pattern.compile(motorbikeRegex);
         Matcher motorbikeMatcher = motorbikePattern.matcher(text);
         if (motorbikeMatcher.find()) {
@@ -244,8 +264,16 @@ public class Scan_Bike extends AppCompatActivity {
             return carMatcherRelaxed.group(0);
         }
 
+        // Xe máy điện/50cc: có thể thiếu khoảng trắng hoặc gạch ngang
+        String electricBikeRegexRelaxed = "\\b(\\d{2}\\s*-?\\s*(MĐ|ĐK|MD)\\d\\s*\\d{5})\\b";
+        Pattern electricBikePatternRelaxed = Pattern.compile(electricBikeRegexRelaxed);
+        Matcher electricBikeMatcherRelaxed = electricBikePatternRelaxed.matcher(text);
+        if (electricBikeMatcherRelaxed.find()) {
+            return electricBikeMatcherRelaxed.group(0);
+        }
+
         // Xe máy: có thể thiếu khoảng trắng hoặc gạch ngang
-        String motorbikeRegexRelaxed = "\\b(\\d{2}[- ]?[A-Z]\\d\\s?\\d{5})\\b";
+        String motorbikeRegexRelaxed = "\\b(\\d{2}\\s*-?\\s*([A-Z]\\d|[A-Z]{2})\\s*\\d{5})\\b";
         Pattern motorbikePatternRelaxed = Pattern.compile(motorbikeRegexRelaxed);
         Matcher motorbikeMatcherRelaxed = motorbikePatternRelaxed.matcher(text);
         if (motorbikeMatcherRelaxed.find()) {
@@ -253,7 +281,7 @@ public class Scan_Bike extends AppCompatActivity {
         }
 
         // Nếu không tìm thấy theo các định dạng, thử tìm bất kỳ chuỗi số/chữ cái nào có thể là biển số
-        String generalRegex = "\\b(\\d{2}[-\\s]?[A-Z]\\d?[-\\s]?\\d{3,5}[.\\s]?\\d{0,2})\\b";
+        String generalRegex = "\\b(\\d{2}\\s*-?\\s*([A-Z]{1,2}|MĐ|ĐK|MD)\\d?\\s*\\d{3,5}[.\\s]?\\d{0,2})\\b";
         Pattern generalPattern = Pattern.compile(generalRegex);
         Matcher generalMatcher = generalPattern.matcher(text);
         if (generalMatcher.find()) {

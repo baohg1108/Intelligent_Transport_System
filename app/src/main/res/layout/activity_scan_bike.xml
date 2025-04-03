@@ -17,16 +17,6 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Khung viền cho khu vực nhận diện biển số -->
-    <ImageView
-        android:id="@+id/scanFrame"
-        android:layout_width="300dp"
-        android:layout_height="150dp"
-        android:alpha="0.7"
-        android:src="@drawable/ic_scan_frame"
-        app:layout_constraintBottom_toBottomOf="@id/previewView"
-        app:layout_constraintEnd_toEndOf="@id/previewView"
-        app:layout_constraintStart_toStartOf="@id/previewView"
-        app:layout_constraintTop_toTopOf="@id/previewView" />
 
     <!-- Phần hiển thị kết quả và nút điều khiển -->
     <androidx.cardview.widget.CardView
