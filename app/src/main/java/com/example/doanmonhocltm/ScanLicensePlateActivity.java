@@ -3,16 +3,15 @@ package com.example.doanmonhocltm;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.CameraSelector;
@@ -25,10 +24,10 @@ import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
+import com.example.doanmonhocltm.callapi.ApiClient;
+import com.example.doanmonhocltm.callapi.ApiService;
+import com.example.doanmonhocltm.model.Car;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.mlkit.vision.common.InputImage;
@@ -42,7 +41,11 @@ import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Scan_Bike extends AppCompatActivity {
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class ScanLicensePlateActivity extends AppCompatActivity {
     private static final String TAG = "Scan_Bike";
     private static final int REQUEST_CODE_PERMISSIONS = 10;
     private static final String[] REQUIRED_PERMISSIONS = new String[]{Manifest.permission.CAMERA};
@@ -61,7 +64,7 @@ public class Scan_Bike extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scan_bike);
+        setContentView(R.layout.activity_scan_license_plate);
 
         previewView = findViewById(R.id.previewView);
         tvLicensePlate = findViewById(R.id.tvLicensePlate);
@@ -107,9 +110,49 @@ public class Scan_Bike extends AppCompatActivity {
                 .setMessage("Bạn có xác nhận tra cứu biển số " + detectedLicensePlate + " này không?")
                 .setPositiveButton("Xác nhận", (dialog, which) -> {
                     // Xử lý khi người dùng xác nhận
-                    Toast.makeText(Scan_Bike.this, "Đang tra cứu biển số: " + detectedLicensePlate, Toast.LENGTH_LONG).show();
+                    Toast.makeText(ScanLicensePlateActivity.this, "Đang tra cứu biển số: " + detectedLicensePlate, Toast.LENGTH_LONG).show();
                     // Thêm code xử lý tra cứu biển số ở đây
                     // Ví dụ: chuyển đến activity mới hoặc gửi request lên server
+
+                    String cleanedPlate = detectedLicensePlate.replace("-", "").replace(" ", "");
+
+                    Log.e("BienSoXe", cleanedPlate);
+
+                    ApiService apiService = ApiClient.getClient(ScanLicensePlateActivity.this).create(ApiService.class);
+
+                    Call<Car> car = apiService.getCarByLicensePlate(cleanedPlate);
+
+                    car.enqueue(new Callback<Car>() {
+
+                        @Override
+                        public void onResponse(Call<Car> call, Response<Car> response) {
+                            if (response.isSuccessful()) {
+                                Car car = response.body();
+
+                                // Chuyển sang màn hình VehicleInfoActivity
+                                Intent intent = new Intent(ScanLicensePlateActivity.this, VehicleInfoActivity.class);
+
+                                Bundle bundle = new Bundle();
+
+                                bundle.putString("licensePlate", car.getLicensePlate());
+                                bundle.putString("brand", car.getBrand());
+                                bundle.putString("color", car.getColor());
+
+                                intent.putExtra("carInfor", bundle);
+                                startActivity(intent);
+
+                            } else {
+                                System.out.println("Response error code: " + response.code());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Car> call, Throwable t) {
+                            t.printStackTrace();
+                        }
+                    });
+
+
                 })
                 .setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss())
                 .create()
