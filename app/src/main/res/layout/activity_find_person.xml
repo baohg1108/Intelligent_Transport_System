@@ -8,7 +8,7 @@
     android:background="#F0F2F5"
     tools:context=".FindPersonActivity">
 
-    <!-- User Profile Section -->
+    <!-- Header Profile Đồng Bộ -->
     <LinearLayout
         android:id="@+id/userProfileContainer"
         android:layout_width="0dp"
@@ -23,8 +23,8 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/userAvatar"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_marginEnd="16dp"
             android:src="@android:drawable/ic_menu_myplaces" />
 
@@ -38,8 +38,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Trần Thị B"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/userPosition"
@@ -51,6 +52,7 @@
         </LinearLayout>
     </LinearLayout>
 
+    <!-- Form CardView -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewMain"
         android:layout_width="0dp"
@@ -60,10 +62,10 @@
         android:layout_marginBottom="16dp"
         app:cardCornerRadius="16dp"
         app:cardElevation="8dp"
+        app:layout_constraintTop_toBottomOf="@id/userProfileContainer"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userProfileContainer"
         app:layout_constraintWidth_percent="0.85">
 
         <LinearLayout
@@ -141,6 +143,7 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
+    <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"

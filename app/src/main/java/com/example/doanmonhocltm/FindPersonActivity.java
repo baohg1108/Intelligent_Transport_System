@@ -3,6 +3,7 @@ package com.example.doanmonhocltm;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -11,12 +12,25 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.doanmonhocltm.callapi.ApiClient;
+import com.example.doanmonhocltm.callapi.ApiService;
+import com.example.doanmonhocltm.model.ResultFaceRecognition;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class FindPersonActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNavigation;
+    private MaterialButton btnScanIdCard;
 
+    private MaterialButton btnLookupCitizen;
+
+    private TextInputEditText editTextCitizenId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,11 +52,23 @@ public class FindPersonActivity extends AppCompatActivity {
 
     private void initializeViews() {
 
+        btnScanIdCard = findViewById(R.id.btnScanIdCard);
         bottomNavigation = findViewById(R.id.bottomNavigation);
         bottomNavigation.setSelectedItemId(R.id.nav_tra_nguoi_lai);
+        btnLookupCitizen = findViewById(R.id.btnLookupCitizen);
+        editTextCitizenId = findViewById(R.id.editTextCitizenId);
     }
 
     private void setupEventListeners() {
+
+        btnScanIdCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FindPersonActivity.this, ScanPersonActivity.class);
+                startActivity(intent);
+            }
+        });
+
         bottomNavigation.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -65,6 +91,54 @@ public class FindPersonActivity extends AppCompatActivity {
 
                 return false;
             }
+        });
+
+        btnLookupCitizen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!editTextCitizenId.getText().toString().isEmpty()) {
+
+                    ApiService apiService = ApiClient.getClient(FindPersonActivity.this).create(ApiService.class);
+
+                    Call<ResultFaceRecognition> resultFaceRecognitionCall = apiService.getPersonById(editTextCitizenId.getText().toString());
+                    resultFaceRecognitionCall.enqueue(new Callback<ResultFaceRecognition>() {
+
+                        @Override
+                        public void onResponse(Call<ResultFaceRecognition> call, Response<ResultFaceRecognition> response) {
+
+                            ResultFaceRecognition result = response.body();
+
+                            Bundle bundle = new Bundle();
+                            bundle.putString("id", result.getId());
+                            bundle.putString("fullName", result.getFullName());
+                            bundle.putLong("birthDate", result.getBirthDate());
+                            bundle.putString("gender", result.getGender());
+                            bundle.putString("address", result.getAddress());
+                            bundle.putString("phoneNumber", result.getPhoneNumber());
+
+
+                            Intent intent = new Intent(FindPersonActivity.this, PersonInfoActivity.class);
+
+                            intent.putExtra("result", bundle);
+
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResultFaceRecognition> call, Throwable t) {
+
+                        }
+                    });
+
+                }
+
+
+                // Chuyển sang màn hình thông tin người dân
+                Intent intent = new Intent(FindPersonActivity.this, PersonInfoActivity.class);
+                intent.putExtra("citizenId", editTextCitizenId.getText().toString());
+                startActivity(intent);
+            }
+
         });
     }
 

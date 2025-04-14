@@ -9,6 +9,7 @@
     tools:context=".FindLicensePlateActivity">
 
     <!-- User Profile Section -->
+    <!-- Profile Header giữ nguyên -->
     <LinearLayout
         android:id="@+id/userProfileContainer"
         android:layout_width="0dp"
@@ -21,15 +22,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <!-- Avatar -->
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/userAvatar"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_marginEnd="16dp"
             android:src="@android:drawable/ic_menu_myplaces" />
 
-        <!-- User Info -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -39,19 +38,18 @@
                 android:id="@+id/userName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nguyễn Văn A"
-                android:textSize="16sp"
+                android:text="Trần Thị B"
+                android:textSize="18sp"
                 android:textStyle="bold"
-                tools:ignore="HardcodedText" />
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/userPosition"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nhân Viên Tra Cứu"
+                android:text="Cán bộ hành chính"
                 android:textColor="#666666"
-                android:textSize="14sp"
-                tools:ignore="HardcodedText" />
+                android:textSize="14sp" />
         </LinearLayout>
     </LinearLayout>
 

@@ -3,18 +3,24 @@ package com.example.doanmonhocltm;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 public class VehicleInfoActivity extends AppCompatActivity {
 
 
     private TextView tvOwner, tvPlate, tvBrand, tvColor, tvLastScan, tvViolationInfo;
+
+    private BottomNavigationView bottomNavigation;
 
 
     @Override
@@ -34,6 +40,33 @@ public class VehicleInfoActivity extends AppCompatActivity {
         tvColor = findViewById(R.id.tvColor);
         tvLastScan = findViewById(R.id.tvLastScan);
         tvViolationInfo = findViewById(R.id.tvViolationInfo);
+        bottomNavigation = findViewById(R.id.bottomNavigation);
+        bottomNavigation.setSelectedItemId(R.id.nav_tra_bien_so);
+
+        bottomNavigation.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int id = item.getItemId();
+
+                if (id == R.id.nav_tra_bien_so) {
+                    startActivity(new Intent(VehicleInfoActivity.this, FindLicensePlateActivity.class));
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                    return true;
+
+                } else if (id == R.id.nav_tra_nguoi_lai) {
+                    startActivity(new Intent(VehicleInfoActivity.this, FindPersonActivity.class));
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                    return true;
+
+                } else if (id == R.id.nav_thong_tin_user) {
+                    startActivity(new Intent(VehicleInfoActivity.this, UserInfoActivity.class));
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                    return true;
+                }
+
+                return false;
+            }
+        });
 
         // Lay du lieu Intent
         Intent intent = getIntent();
@@ -50,8 +83,6 @@ public class VehicleInfoActivity extends AppCompatActivity {
         tvPlate.setText(licensePlate);
         tvBrand.setText(brand);
         tvColor.setText(color);
-
-
 
 
     }

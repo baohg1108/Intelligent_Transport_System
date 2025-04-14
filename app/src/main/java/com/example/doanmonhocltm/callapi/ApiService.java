@@ -3,13 +3,16 @@ package com.example.doanmonhocltm.callapi;
 
 import com.example.doanmonhocltm.model.Car;
 import com.example.doanmonhocltm.model.LoginRequest;
+import com.example.doanmonhocltm.model.ResultFaceRecognition;
 import com.example.doanmonhocltm.model.ResultLogin;
 
-import retrofit2.*;
+import okhttp3.MultipartBody;
+import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 public interface ApiService {
@@ -20,4 +23,10 @@ public interface ApiService {
     @GET("quet/api/vehicles/cars/{licensePlate}")
     Call<Car> getCarByLicensePlate(@Path("licensePlate") String licensePlate);
 
+    @Multipart
+    @POST("quet/api/face-recognition/identify")
+    Call<ResultFaceRecognition> identifyFace(@Part MultipartBody.Part image);
+
+    @GET("/quet/api/person/{id}")
+    Call<ResultFaceRecognition> getPersonById(@Path("id") String id);
 }
