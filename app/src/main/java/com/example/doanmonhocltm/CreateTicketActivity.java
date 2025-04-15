@@ -8,6 +8,8 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -21,7 +23,10 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.doanmonhocltm.model.Violation;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -31,7 +36,9 @@ import com.google.android.gms.location.Priority;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -41,6 +48,25 @@ import android.Manifest;
 
 public class CreateTicketActivity extends AppCompatActivity {
     private static final int REQUEST_LOCATION_PERMISSION = 1;
+
+    // Giao diện xử lý vi phạm
+    private AutoCompleteTextView dropdownViolationType;
+    private RecyclerView rvSelectedViolations;
+    private TextView tvTotalFine;
+    private Button btnAddViolation;
+
+    // Danh sách vi phạm đã chọn
+    private ArrayList<Violation> selectedViolations = new ArrayList<>();
+    private ViolationAdapter violationAdapter;
+
+    // Danh sách các loại vi phạm và tiền phạt tương ứng
+    private final String[] violationNames = {
+            "Vượt đèn đỏ", "Không đội mũ bảo hiểm", "Đi sai làn", "Không có bằng lái"
+    };
+    private final int[] violationFines = {
+            1500000, 300000, 1000000, 2000000
+    };
+
     private TextView tvCCCD;
     private TextView tvPlateNumber;
     private TextView tvDriverName;
@@ -125,6 +151,24 @@ public class CreateTicketActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        // Sự kiện thêm vi phạm
+        btnAddViolation.setOnClickListener(v -> {
+            int index = dropdownViolationType.getListSelection();
+            if (index == -1) {
+                index = findIndexByName(dropdownViolationType.getText().toString());
+            }
+
+            if (index >= 0) {
+                Violation violation = new Violation(violationNames[index], violationFines[index]);
+                selectedViolations.add(violation);
+                violationAdapter.notifyItemInserted(selectedViolations.size() - 1);
+                updateTotalFine();
+            } else {
+                Toast.makeText(this, "Hãy chọn hành vi vi phạm hợp lệ!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     private void initializeViews() {
@@ -135,6 +179,25 @@ public class CreateTicketActivity extends AppCompatActivity {
         etLocation = findViewById(R.id.etLocation);
 
         btnBack = findViewById(R.id.btnBack);
+
+        dropdownViolationType = findViewById(R.id.dropdownViolationType);
+        rvSelectedViolations = findViewById(R.id.rvSelectedViolations);
+        tvTotalFine = findViewById(R.id.tvTotalFine);
+        btnAddViolation = findViewById(R.id.btnAddViolation);
+
+        // Cấu hình RecyclerView
+        rvSelectedViolations.setLayoutManager(new LinearLayoutManager(this));
+        violationAdapter = new ViolationAdapter(selectedViolations);
+        rvSelectedViolations.setAdapter(violationAdapter);
+
+        // Gắn danh sách dropdown
+        ArrayAdapter<String> dropdownAdapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_dropdown_item_1line,
+                violationNames
+        );
+        dropdownViolationType.setAdapter(dropdownAdapter);
+
 
     }
 
@@ -194,6 +257,27 @@ public class CreateTicketActivity extends AppCompatActivity {
             }
         }
     }
+
+    // Cập nhật tổng tiền phạt
+    private void updateTotalFine() {
+        int total = 0;
+        for (Violation v : selectedViolations) {
+            total += v.getFineAmount();
+        }
+        String formatted = NumberFormat.getNumberInstance(Locale.US).format(total) + " VNĐ";
+        tvTotalFine.setText(formatted);
+    }
+
+    // Tìm chỉ số của hành vi vi phạm theo tên
+    private int findIndexByName(String name) {
+        for (int i = 0; i < violationNames.length; i++) {
+            if (violationNames[i].equalsIgnoreCase(name)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
 
 
 }
