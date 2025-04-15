@@ -1,5 +1,6 @@
 package com.example.doanmonhocltm;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -39,6 +40,7 @@ import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -66,6 +68,18 @@ public class CreateTicketActivity extends AppCompatActivity {
     private final int[] violationFines = {
             1500000, 300000, 1000000, 2000000
     };
+
+    private AutoCompleteTextView dropdownPenaltyType;
+    private TextInputEditText etDueDate;
+
+    private final String[] penaltyTypes = {
+            "Phạt tiền",
+            "Tạm giữ phương tiện",
+            "Phạt tiền + tạm giữ phương tiện",
+            "Tước GPLX",
+            "Cảnh cáo"
+    };
+
 
     private TextView tvCCCD;
     private TextView tvPlateNumber;
@@ -169,6 +183,26 @@ public class CreateTicketActivity extends AppCompatActivity {
             }
         });
 
+        etDueDate.setOnClickListener(v -> {
+            // Lấy ngày hiện tại làm mặc định
+            final Calendar calendar = Calendar.getInstance();
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(
+                    CreateTicketActivity.this,
+                    (view, year, month, dayOfMonth) -> {
+                        // Format ngày dd/MM/yyyy
+                        String formattedDate = String.format(Locale.getDefault(), "%02d/%02d/%04d",
+                                dayOfMonth, month + 1, year);
+                        etDueDate.setText(formattedDate); // Gán vào ô nhập
+                    },
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DAY_OF_MONTH)
+            );
+            datePickerDialog.show();
+        });
+
+
     }
 
     private void initializeViews() {
@@ -198,6 +232,16 @@ public class CreateTicketActivity extends AppCompatActivity {
         );
         dropdownViolationType.setAdapter(dropdownAdapter);
 
+        dropdownPenaltyType = findViewById(R.id.dropdownPenaltyType);
+        etDueDate = findViewById(R.id.etDueDate);
+
+        // Adapter cho hình thức xử phạt
+        ArrayAdapter<String> penaltyAdapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_dropdown_item_1line,
+                penaltyTypes
+        );
+        dropdownPenaltyType.setAdapter(penaltyAdapter);
 
     }
 
