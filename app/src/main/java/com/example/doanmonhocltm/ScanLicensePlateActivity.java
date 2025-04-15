@@ -114,7 +114,9 @@ public class ScanLicensePlateActivity extends AppCompatActivity {
                     // Thêm code xử lý tra cứu biển số ở đây
                     // Ví dụ: chuyển đến activity mới hoặc gửi request lên server
 
-                    String cleanedPlate = detectedLicensePlate.replace("-", "").replace(" ", "");
+
+                    String cleanedPlate = detectedLicensePlate.replace("-", "").replace(".", "").replace(" ", "");
+
 
                     Log.e("BienSoXe", cleanedPlate);
 

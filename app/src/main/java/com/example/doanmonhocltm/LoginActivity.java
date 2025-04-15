@@ -3,21 +3,19 @@ package com.example.doanmonhocltm;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
 import com.example.doanmonhocltm.callapi.ApiClient;
 import com.example.doanmonhocltm.callapi.ApiService;
 import com.example.doanmonhocltm.callapi.SessionManager;
 import com.example.doanmonhocltm.model.LoginRequest;
+import com.example.doanmonhocltm.model.ResultFaceRecognition;
 import com.example.doanmonhocltm.model.ResultLogin;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -40,20 +38,16 @@ public class LoginActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Khởi tạo các thành phần giao diện
         initializeViews();
-
-        // Thiết lập các sự kiện
         setupEventListeners();
     }
 
     private void setupEventListeners() {
         btnLogin.setOnClickListener(v -> {
-            String username = edtUsername.getText().toString();
+            String usernameInput = edtUsername.getText().toString();
             String password = edtPassword.getText().toString();
 
-            LoginRequest loginRequest = new LoginRequest(username, password);
-
+            LoginRequest loginRequest = new LoginRequest(usernameInput, password);
             ApiService apiService = ApiClient.getClient(LoginActivity.this).create(ApiService.class);
 
             Call<ResultLogin> resultLogin = apiService.login(loginRequest);
@@ -62,20 +56,40 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<ResultLogin> call, Response<ResultLogin> response) {
                     if (response.isSuccessful() && response.body() != null) {
-                        // 👉 1. Lấy token từ response
-                        String token = response.body().getToken();
-
-                        // 👉 2. Tạo session manager với context hiện tại (LoginActivity)
+                        ResultLogin result = response.body();
+                        String token = result.getToken();
+                        String resUsername = result.getUsername(); // rename để tránh trùng tên
+                        String userId = result.getId();
+                        // Tạo session và lưu thông tin
                         SessionManager sessionManager = new SessionManager(LoginActivity.this);
-
-                        // 👉 3. Lưu token vào SharedPreferences
                         sessionManager.saveToken(token);
+                        // Gọi để lấy thêm namePerson
+                        Call<ResultFaceRecognition> resultFaceRecognition = apiService.getPersonById(userId);
 
-                        // 👉 4. (Tuỳ chọn) Chuyển sang màn hình chính hoặc báo đăng nhập thành công
-                        System.out.println("✅ Token đã được lưu: " + token);
+                        resultFaceRecognition.enqueue(new Callback<ResultFaceRecognition>() {
+                            @Override
+                            public void onResponse(Call<ResultFaceRecognition> call, Response<ResultFaceRecognition> response) {
+                                if (response.isSuccessful() && response.body() != null) {
+                                    String namePerson = response.body().getFullName();
 
-                        Intent intent = new Intent(LoginActivity.this, FindLicensePlateActivity.class);
-                        startActivity(intent);
+
+                                    sessionManager.saveUserSession(token, userId, resUsername);
+                                    // Lưu thêm họ tên
+                                    sessionManager.saveNamePerson(namePerson);
+
+                                    // Chuyển màn
+                                    Intent intent = new Intent(LoginActivity.this, FindLicensePlateActivity.class);
+                                    startActivity(intent);
+                                } else {
+                                    System.out.println("⚠️ Không lấy được thông tin namePerson");
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResultFaceRecognition> call, Throwable t) {
+                                t.printStackTrace();
+                            }
+                        });
                     } else {
                         System.out.println("❌ Đăng nhập thất bại: " + response.code());
                     }
@@ -83,7 +97,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<ResultLogin> call, Throwable t) {
-
+                    t.printStackTrace();
                 }
             });
         });
@@ -94,6 +108,4 @@ public class LoginActivity extends AppCompatActivity {
         this.edtPassword = findViewById(R.id.edtPassword);
         this.btnLogin = findViewById(R.id.btnLogin);
     }
-
-
 }

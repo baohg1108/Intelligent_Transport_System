@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.doanmonhocltm.callapi.ApiClient;
 import com.example.doanmonhocltm.callapi.ApiService;
+import com.example.doanmonhocltm.callapi.SessionManager;
 import com.example.doanmonhocltm.model.Car;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -23,6 +25,8 @@ import retrofit2.Response;
 
 public class UserInfoActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigation;
+
+    private TextView userName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +49,12 @@ public class UserInfoActivity extends AppCompatActivity {
     private void initializeViews() {
         bottomNavigation = findViewById(R.id.bottomNavigation);
         bottomNavigation.setSelectedItemId(R.id.nav_thong_tin_user);
+
+        //__________________________________________________________________________________________________________
+        SessionManager sessionManager = new SessionManager(UserInfoActivity.this);
+        userName = findViewById(R.id.userName);
+        userName.setText(sessionManager.getNamePerson());
+//__________________________________________________________________________________________________________
     }
     private void setupEventListeners() {
 

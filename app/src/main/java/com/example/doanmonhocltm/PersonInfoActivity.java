@@ -13,6 +13,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.doanmonhocltm.callapi.SessionManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.text.SimpleDateFormat;
@@ -29,6 +30,8 @@ public class PersonInfoActivity extends AppCompatActivity {
     private TextView tvAddress;
     private TextView tvPhoneNumber;
     private ImageView personImage;
+
+    private TextView userName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +115,12 @@ public class PersonInfoActivity extends AppCompatActivity {
         tvAddress = findViewById(R.id.tvAddress);
         tvPhoneNumber = findViewById(R.id.tvPhoneNumber);
         personImage = findViewById(R.id.personImage);
+
+        //__________________________________________________________________________________________________________
+        SessionManager sessionManager = new SessionManager(PersonInfoActivity.this);
+        userName = findViewById(R.id.userName);
+        userName.setText(sessionManager.getNamePerson());
+//__________________________________________________________________________________________________________
 
 
     }

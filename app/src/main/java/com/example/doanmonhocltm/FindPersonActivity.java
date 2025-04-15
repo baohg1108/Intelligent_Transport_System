@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.doanmonhocltm.callapi.ApiClient;
 import com.example.doanmonhocltm.callapi.ApiService;
+import com.example.doanmonhocltm.callapi.SessionManager;
 import com.example.doanmonhocltm.model.ResultFaceRecognition;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
@@ -31,6 +33,8 @@ public class FindPersonActivity extends AppCompatActivity {
     private MaterialButton btnLookupCitizen;
 
     private TextInputEditText editTextCitizenId;
+
+    private TextView userName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +61,12 @@ public class FindPersonActivity extends AppCompatActivity {
         bottomNavigation.setSelectedItemId(R.id.nav_tra_nguoi_lai);
         btnLookupCitizen = findViewById(R.id.btnLookupCitizen);
         editTextCitizenId = findViewById(R.id.editTextCitizenId);
+
+        //__________________________________________________________________________________________________________
+        SessionManager sessionManager = new SessionManager(FindPersonActivity.this);
+        userName = findViewById(R.id.userName);
+        userName.setText(sessionManager.getNamePerson());
+        //__________________________________________________________________________________________________________
     }
 
     private void setupEventListeners() {

@@ -1,13 +1,16 @@
 package com.example.doanmonhocltm.callapi;
 
 import android.content.Context;
+
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
-//        private static String BASE_URL = "http://10.0.2.2:8087/"; // Dành cho giả lập Android
+    //        private static String BASE_URL = "http://10.0.2.2:8087/"; // Dành cho giả lập Android
     private static String BASE_URL = "http://192.168.100.92:8087/"; // Địa chỉ IP của server
 
     private static Retrofit retrofit;
@@ -21,10 +24,14 @@ public class ApiClient {
             HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY); // Log toàn bộ request/response
 
+
             // Cấu hình OkHttpClient với interceptor
             OkHttpClient client = new OkHttpClient.Builder()
                     .addInterceptor(loggingInterceptor)  // Thêm interceptor vào client
-                    .addInterceptor(new AuthInterceptor(sessionManager))  // Interceptor của bạn
+                    .addInterceptor(new AuthInterceptor(sessionManager))
+                    .connectTimeout(30, TimeUnit.MINUTES)  // Chờ kết nối tới 30 phút
+                    .readTimeout(30, TimeUnit.MINUTES)     // Chờ đọc dữ liệu tới 30 phút
+                    .writeTimeout(30, TimeUnit.MINUTES)    // Chờ ghi dữ liệu tới 30 phút// Interceptor của bạn
                     .build();
 
             // Tạo Retrofit instance

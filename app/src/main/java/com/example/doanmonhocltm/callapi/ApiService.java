@@ -29,4 +29,6 @@ public interface ApiService {
 
     @GET("/quet/api/person/{id}")
     Call<ResultFaceRecognition> getPersonById(@Path("id") String id);
+
+
 }
