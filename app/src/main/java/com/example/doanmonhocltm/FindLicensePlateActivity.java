@@ -27,6 +27,7 @@ import com.example.doanmonhocltm.callapi.ApiClient;
 import com.example.doanmonhocltm.callapi.ApiService;
 import com.example.doanmonhocltm.callapi.SessionManager;
 import com.example.doanmonhocltm.model.Car;
+import com.example.doanmonhocltm.model.ResultFaceRecognition;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -101,16 +102,40 @@ public class FindLicensePlateActivity extends AppCompatActivity {
                     if (response.isSuccessful() && response.body() != null) {
                         Car car = response.body();
 
-                        // Chuyển sang màn hình VehicleInfoActivity
-                        Intent intent = new Intent(FindLicensePlateActivity.this, VehicleInfoActivity.class);
+                        Call<ResultFaceRecognition> resultFaceRecognitionCall = apiService.getPersonById(car.getOwnerId());
 
-                        Bundle bundle = new Bundle();
-                        bundle.putString("licensePlate", car.getLicensePlate());
-                        bundle.putString("brand", car.getBrand());
-                        bundle.putString("color", car.getColor());
+                        resultFaceRecognitionCall.enqueue(new Callback<ResultFaceRecognition>() {
+                            @Override
+                            public void onResponse(Call<ResultFaceRecognition> call, Response<ResultFaceRecognition> response) {
+                                if ( response.isSuccessful())
+                                {
+                                    ResultFaceRecognition resultFaceRecognition = response.body();
+                                    // Chuyển sang màn hình VehicleInfoActivity
+                                    Intent intent = new Intent(FindLicensePlateActivity.this, VehicleInfoActivity.class);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString("licensePlate", car.getLicensePlate());
+                                    bundle.putString("brand", car.getBrand());
+                                    bundle.putString("color", car.getColor());
+                                    bundle.putString("owner", resultFaceRecognition.getFullName());
 
-                        intent.putExtra("carInfor", bundle);
-                        startActivity(intent);
+                                    intent.putExtra("carInfor", bundle);
+                                    startActivity(intent);
+                                }
+                                else
+                                {
+                                    Toast.makeText(FindLicensePlateActivity.this,
+                                            "Không tìm thấy thông tin xe. Mã lỗi: " + response.code(),
+                                            Toast.LENGTH_SHORT).show();
+
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResultFaceRecognition> call, Throwable t) {
+
+                            }
+                        });
+
                     } else {
                         Toast.makeText(FindLicensePlateActivity.this,
                                 "Không tìm thấy thông tin xe. Mã lỗi: " + response.code(),

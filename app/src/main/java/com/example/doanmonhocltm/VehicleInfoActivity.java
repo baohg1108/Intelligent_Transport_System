@@ -18,8 +18,15 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.doanmonhocltm.callapi.ApiClient;
+import com.example.doanmonhocltm.callapi.ApiService;
 import com.example.doanmonhocltm.callapi.SessionManager;
+import com.example.doanmonhocltm.model.ResultFaceRecognition;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class VehicleInfoActivity extends AppCompatActivity {
 
@@ -35,6 +42,7 @@ public class VehicleInfoActivity extends AppCompatActivity {
     private Button btnConfirmVerification;
     private Button btnScanFace;
     private EditText etCCCD;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +73,9 @@ public class VehicleInfoActivity extends AppCompatActivity {
         btnConfirmVerification = findViewById(R.id.btnConfirmVerification);
         btnScanFace = findViewById(R.id.btnScanFace);
         etCCCD = findViewById(R.id.etCCCD);
+
+
+        //__________________________________________________________________________________________________________
 
         // Thiết lập sự kiện cho các button mới
         setupButtonListeners();
@@ -105,14 +116,18 @@ public class VehicleInfoActivity extends AppCompatActivity {
 
         // Lay du lieu bunlde
         Bundle bundle = intent.getBundleExtra("carInfor");
+        if (bundle != null) {
+            String licensePlate = bundle.getString("licensePlate");
+            String brand = bundle.getString("brand");
+            String color = bundle.getString("color");
+            String owner = bundle.getString("owner");
 
-        String licensePlate = bundle.getString("licensePlate");
-        String brand = bundle.getString("brand");
-        String color = bundle.getString("color");
+            tvPlate.setText(licensePlate);
+            tvBrand.setText(brand);
+            tvColor.setText(color);
+            tvOwner.setText(owner);
+        }
 
-        tvPlate.setText(licensePlate);
-        tvBrand.setText(brand);
-        tvColor.setText(color);
     }
 
     /**
@@ -162,21 +177,50 @@ public class VehicleInfoActivity extends AppCompatActivity {
                 return;
             }
 
-            // Ẩn container xác thực
-            idVerificationContainer.setVisibility(View.GONE);
+            // Call api CCCD
+            ApiService apiService = ApiClient.getClient(VehicleInfoActivity.this).create(ApiService.class);
+            Call<ResultFaceRecognition> resultFaceRecognitionCall = apiService.getPersonById(cccd);
 
-            // Tạo Bundle chứa thông tin cần thiết
-            Bundle ticketData = new Bundle();
-            ticketData.putString("licensePlate", tvPlate.getText().toString());
-            ticketData.putString("brand", tvBrand.getText().toString());
-            ticketData.putString("color", tvColor.getText().toString());
-            ticketData.putString("ownerName", tvOwner.getText().toString());
-            ticketData.putString("driverCCCD", cccd);
+            resultFaceRecognitionCall.enqueue(new Callback<ResultFaceRecognition>() {
+                @Override
+                public void onResponse(Call<ResultFaceRecognition> call, Response<ResultFaceRecognition> response) {
+                    if (response.isSuccessful()) {
+                        ResultFaceRecognition resultFaceRecognition = response.body();
+                        if (resultFaceRecognition != null) {
+                            // Hiển thị thông báo xác thực thành công
+                            Toast.makeText(VehicleInfoActivity.this, "Xác thực thành công", Toast.LENGTH_SHORT).show();
 
-            // Chuyển sang màn hình tạo biên bản
-            Intent intent = new Intent(VehicleInfoActivity.this, CreateTicketActivity.class);
-            intent.putExtra("ticketData", ticketData);
-            startActivity(intent);
+
+                            // Tạo Bundle chứa thông tin cần thiết
+                            Bundle ticketData = new Bundle();
+                            ticketData.putString("licensePlate", tvPlate.getText().toString());
+//                            ticketData.putString("brand", tvBrand.getText().toString());
+//                            ticketData.putString("color", tvColor.getText().toString());
+//                            ticketData.putString("ownerName", tvOwner.getText().toString());
+                            ticketData.putString("driverCCCD", resultFaceRecognition.getId());
+                            ticketData.putString("driverName", resultFaceRecognition.getFullName());
+
+
+                            // Chuyển sang màn hình tạo biên bản
+                            Intent intent = new Intent(VehicleInfoActivity.this, CreateTicketActivity.class);
+                            intent.putExtra("ticketData", ticketData);
+                            startActivity(intent);
+
+
+                            // Ẩn container xác thực
+                            idVerificationContainer.setVisibility(View.GONE);
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResultFaceRecognition> call, Throwable t) {
+                    Toast.makeText(VehicleInfoActivity.this, "Lỗi kết nối. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
+                    t.printStackTrace();
+                }
+            });
+            //__________________________________________________________________________________________________
+
         });
 
         // Nút quét khuôn mặt
