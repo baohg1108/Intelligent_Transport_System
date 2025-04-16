@@ -3,12 +3,18 @@ package com.example.doanmonhocltm;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +34,8 @@ import androidx.core.content.ContextCompat;
 import com.example.doanmonhocltm.callapi.ApiClient;
 import com.example.doanmonhocltm.callapi.ApiService;
 import com.example.doanmonhocltm.model.Car;
+import com.example.doanmonhocltm.model.Motorcycle;
+import com.example.doanmonhocltm.model.ResultFaceRecognition;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.mlkit.vision.common.InputImage;
@@ -49,7 +57,7 @@ public class ScanLicensePlateActivity extends AppCompatActivity {
     private static final String TAG = "Scan_Bike";
     private static final int REQUEST_CODE_PERMISSIONS = 10;
     private static final String[] REQUIRED_PERMISSIONS = new String[]{Manifest.permission.CAMERA};
-
+    private  String cleanedPlate;
     private PreviewView previewView;
     private TextView tvLicensePlate;
     private Button btnCapture;
@@ -99,6 +107,182 @@ public class ScanLicensePlateActivity extends AppCompatActivity {
         cameraExecutor = Executors.newSingleThreadExecutor();
     }
 
+
+    private void showCustomVehicleTypeDialog() {
+        // Tạo dialog với custom layout
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_vehicle_type);
+
+        // Set dialog width to match parent
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+
+        // Khai báo các view trong dialog
+        TextView dialogTitle = dialog.findViewById(R.id.dialog_title);
+        LinearLayout carOption = dialog.findViewById(R.id.option_car);
+        LinearLayout motorcycleOption = dialog.findViewById(R.id.option_motorcycle);
+        Button btnCancel = dialog.findViewById(R.id.btn_cancel);
+
+        // Set tiêu đề
+        dialogTitle.setText("Chọn loại phương tiện");
+
+        // Set sự kiện click cho các lựa chọn
+        carOption.setOnClickListener(v -> {
+            performVehicleLookup("Xe ô tô");
+            dialog.dismiss();
+        });
+
+        motorcycleOption.setOnClickListener(v -> {
+            performVehicleLookup("Xe máy");
+            dialog.dismiss();
+        });
+
+        // Set sự kiện cho nút hủy
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        // Hiển thị dialog
+        dialog.show();
+    }
+
+    private void performVehicleLookup(String vehicleType) {
+        String vehicleInfo = cleanedPlate;
+
+        if (vehicleInfo.trim().isEmpty()) {
+            Toast.makeText(this, "Vui lòng nhập biển số xe", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (vehicleType.equals("Xe ô tô")) {
+            ApiService apiService = ApiClient.getClient(ScanLicensePlateActivity.this).create(ApiService.class);
+            Call<Car> carCall = apiService.getCarByLicensePlate(vehicleInfo);
+            carCall.enqueue(new Callback<Car>() {
+                @Override
+                public void onResponse(Call<Car> call, Response<Car> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        Car car = response.body();
+
+                        Call<ResultFaceRecognition> resultFaceRecognitionCall = apiService.getPersonById(car.getOwnerId());
+
+                        resultFaceRecognitionCall.enqueue(new Callback<ResultFaceRecognition>() {
+                            @Override
+                            public void onResponse(Call<ResultFaceRecognition> call, Response<ResultFaceRecognition> response) {
+                                if (response.isSuccessful()) {
+                                    ResultFaceRecognition resultFaceRecognition = response.body();
+                                    // Chuyển sang màn hình VehicleInfoActivity
+                                    Intent intent = new Intent(ScanLicensePlateActivity.this, VehicleInfoActivity.class);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putInt("type", 1); // 1: xe hoi
+                                    bundle.putString("licensePlate", car.getLicensePlate());
+                                    bundle.putString("brand", car.getBrand());
+                                    bundle.putString("color", car.getColor());
+                                    bundle.putString("owner", resultFaceRecognition.getFullName());
+
+                                    intent.putExtra("Infor", bundle);
+                                    startActivity(intent);
+                                } else {
+                                    Toast.makeText(ScanLicensePlateActivity.this,
+                                            "Không tìm thấy thông tin xe. Mã lỗi: " + response.code(),
+                                            Toast.LENGTH_SHORT).show();
+
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResultFaceRecognition> call, Throwable t) {
+
+                            }
+                        });
+
+                    } else {
+                        Toast.makeText(ScanLicensePlateActivity.this,
+                                "Không tìm thấy thông tin xe. Mã lỗi: " + response.code(),
+                                Toast.LENGTH_SHORT).show();
+                        System.out.println("Response error code: " + response.code());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Car> call, Throwable t) {
+                    Toast.makeText(ScanLicensePlateActivity.this,
+                            "Lỗi kết nối: " + t.getMessage(),
+                            Toast.LENGTH_SHORT).show();
+                    t.printStackTrace();
+                }
+            });
+        } else if (vehicleType.equals("Xe máy")) {
+//            // Xử lý tra cứu cho xe máy
+//            Toast.makeText(this, "Chức năng tra cứu xe máy đang được phát triển", Toast.LENGTH_SHORT).show();
+
+
+            ApiService apiService = ApiClient.getClient(ScanLicensePlateActivity.this).create(ApiService.class);
+            Call<Motorcycle> carCall = apiService.getMotorcycleByLicensePlate(vehicleInfo);
+            carCall.enqueue(new Callback<Motorcycle>() {
+
+                @Override
+                public void onResponse(Call<Motorcycle> call, Response<Motorcycle> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        Motorcycle motorcycle = response.body();
+
+                        Call<ResultFaceRecognition> resultFaceRecognitionCall = apiService.getPersonById(motorcycle.getOwnerId());
+
+                        resultFaceRecognitionCall.enqueue(new Callback<ResultFaceRecognition>() {
+                            @Override
+                            public void onResponse(Call<ResultFaceRecognition> call, Response<ResultFaceRecognition> response) {
+                                if (response.isSuccessful()) {
+                                    ResultFaceRecognition resultFaceRecognition = response.body();
+                                    // Chuyển sang màn hình VehicleInfoActivity
+                                    Intent intent = new Intent(ScanLicensePlateActivity.this, VehicleInfoActivity.class);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putInt("type", 2);
+                                    bundle.putString("licensePlate", motorcycle.getLicensePlate());
+                                    bundle.putString("brand", motorcycle.getBrand());
+                                    bundle.putString("color", motorcycle.getColor());
+                                    bundle.putString("owner", resultFaceRecognition.getFullName());
+
+                                    intent.putExtra("Infor", bundle);
+                                    startActivity(intent);
+                                } else {
+                                    Toast.makeText(ScanLicensePlateActivity.this,
+                                            "Không tìm thấy thông tin xe. Mã lỗi: " + response.code(),
+                                            Toast.LENGTH_SHORT).show();
+
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResultFaceRecognition> call, Throwable t) {
+                                Toast.makeText(ScanLicensePlateActivity.this,
+                                        "Không tìm thấy thông tin xe. Mã lỗi: " + response.code(),
+                                        Toast.LENGTH_SHORT).show();
+                                System.out.println("Response error code: " + response.code());
+                            }
+                        });
+
+                    } else {
+                        Toast.makeText(ScanLicensePlateActivity.this,
+                                "Không tìm thấy thông tin xe. Mã lỗi: " + response.code(),
+                                Toast.LENGTH_SHORT).show();
+                        System.out.println("Response error code: " + response.code());
+                    }
+
+                }
+
+                @Override
+                public void onFailure(Call<Motorcycle> call, Throwable t) {
+                    Toast.makeText(ScanLicensePlateActivity.this,
+                            "Lỗi kết nối: " + t.getMessage(),
+                            Toast.LENGTH_SHORT).show();
+                    t.printStackTrace();
+
+                }
+            });
+        }
+    }
+
     private void showConfirmationDialog() {
         if (detectedLicensePlate.isEmpty()) {
             Toast.makeText(this, "Vui lòng quét biển số trước", Toast.LENGTH_SHORT).show();
@@ -115,44 +299,46 @@ public class ScanLicensePlateActivity extends AppCompatActivity {
                     // Ví dụ: chuyển đến activity mới hoặc gửi request lên server
 
 
-                    String cleanedPlate = detectedLicensePlate.replace("-", "").replace(".", "").replace(" ", "");
+                    cleanedPlate = detectedLicensePlate.replace("-", "").replace(".", "").replace(" ", "");
 
 
                     Log.e("BienSoXe", cleanedPlate);
 
-                    ApiService apiService = ApiClient.getClient(ScanLicensePlateActivity.this).create(ApiService.class);
+                    showCustomVehicleTypeDialog();
 
-                    Call<Car> car = apiService.getCarByLicensePlate(cleanedPlate);
-
-                    car.enqueue(new Callback<Car>() {
-
-                        @Override
-                        public void onResponse(Call<Car> call, Response<Car> response) {
-                            if (response.isSuccessful()) {
-                                Car car = response.body();
-
-                                // Chuyển sang màn hình VehicleInfoActivity
-                                Intent intent = new Intent(ScanLicensePlateActivity.this, VehicleInfoActivity.class);
-
-                                Bundle bundle = new Bundle();
-
-                                bundle.putString("licensePlate", car.getLicensePlate());
-                                bundle.putString("brand", car.getBrand());
-                                bundle.putString("color", car.getColor());
-
-                                intent.putExtra("carInfor", bundle);
-                                startActivity(intent);
-
-                            } else {
-                                System.out.println("Response error code: " + response.code());
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<Car> call, Throwable t) {
-                            t.printStackTrace();
-                        }
-                    });
+//                    ApiService apiService = ApiClient.getClient(ScanLicensePlateActivity.this).create(ApiService.class);
+//
+//                    Call<Car> car = apiService.getCarByLicensePlate(cleanedPlate);
+//
+//                    car.enqueue(new Callback<Car>() {
+//
+//                        @Override
+//                        public void onResponse(Call<Car> call, Response<Car> response) {
+//                            if (response.isSuccessful()) {
+//                                Car car = response.body();
+//
+//                                // Chuyển sang màn hình VehicleInfoActivity
+//                                Intent intent = new Intent(ScanLicensePlateActivity.this, VehicleInfoActivity.class);
+//
+//                                Bundle bundle = new Bundle();
+//
+//                                bundle.putString("licensePlate", car.getLicensePlate());
+//                                bundle.putString("brand", car.getBrand());
+//                                bundle.putString("color", car.getColor());
+//
+//                                intent.putExtra("carInfor", bundle);
+//                                startActivity(intent);
+//
+//                            } else {
+//                                System.out.println("Response error code: " + response.code());
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onFailure(Call<Car> call, Throwable t) {
+//                            t.printStackTrace();
+//                        }
+//                    });
 
 
                 })

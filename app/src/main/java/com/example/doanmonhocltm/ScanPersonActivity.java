@@ -56,6 +56,9 @@ import retrofit2.Response;
 
 public class ScanPersonActivity extends AppCompatActivity {
     private static final String TAG = "ScanPersonActivity";
+
+    private int type;
+    private String licensePlate;
     private static final int REQUEST_CODE_PERMISSIONS = 10;
     private static final String[] REQUIRED_PERMISSIONS = new String[]{Manifest.permission.CAMERA};
 
@@ -85,6 +88,17 @@ public class ScanPersonActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_scan_person);
+
+        Intent intent = getIntent();
+        Bundle ticketData = intent.getBundleExtra("ticketData");
+        if (ticketData != null) {
+            type = ticketData.getInt("type");
+            licensePlate = ticketData.getString("licensePlate");
+
+            Toast.makeText(ScanPersonActivity.this, "type: " + type + " - LicensePale " + licensePlate, Toast.LENGTH_SHORT).show();
+
+        }
+
 
         // Khởi tạo SessionManager
         sessionManager = new SessionManager(this);
@@ -436,17 +450,34 @@ public class ScanPersonActivity extends AppCompatActivity {
             return;
         }
 
-        Bundle bundle = new Bundle();
-        bundle.putString("id", result.getId());
-        bundle.putString("fullName", result.getFullName());
-        bundle.putLong("birthDate", result.getBirthDate());
-        bundle.putString("gender", result.getGender());
-        bundle.putString("address", result.getAddress());
-        bundle.putString("phoneNumber", result.getPhoneNumber());
+        if (type == 3) {
+            Bundle bundle = new Bundle();
+            bundle.putString("id", result.getId());
+            bundle.putString("fullName", result.getFullName());
+            bundle.putLong("birthDate", result.getBirthDate());
+            bundle.putString("gender", result.getGender());
+            bundle.putString("address", result.getAddress());
+            bundle.putString("phoneNumber", result.getPhoneNumber());
 
-        Intent intent = new Intent(ScanPersonActivity.this, PersonInfoActivity.class);
-        intent.putExtra("result", bundle);
-        startActivity(intent);
+            Intent intent = new Intent(ScanPersonActivity.this, PersonInfoActivity.class);
+            intent.putExtra("result", bundle);
+            startActivity(intent);
+        } else {
+            // Tạo Bundle chứa thông tin cần thiết
+            Bundle ticketData = new Bundle();
+            ticketData.putInt("type", type);
+            ticketData.putString("licensePlate", licensePlate);
+            ticketData.putString("driverCCCD", result.getId());
+            ticketData.putString("driverName", result.getFullName());
+
+            // Chuyển sang màn hình tạo biên bản
+            Intent intent = new Intent(ScanPersonActivity.this, CreateTicketActivity.class);
+            intent.putExtra("ticketData", ticketData);
+            startActivity(intent);
+
+        }
+
+
     }
 
     // Phương thức lấy đường dẫn thực từ URI

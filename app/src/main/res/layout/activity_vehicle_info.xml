@@ -138,11 +138,12 @@
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
                             android:text="Chủ xe: " />
-                        <TextView android:id="@+id/tvOwner"
+
+                        <TextView
+                            android:id="@+id/tvOwner"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Nguyễn Văn B" />
+                            android:layout_weight="1" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -162,11 +163,12 @@
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
                             android:text="Biển số: " />
-                        <TextView android:id="@+id/tvPlate"
+
+                        <TextView
+                            android:id="@+id/tvPlate"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="29A-123.45" />
+                            android:layout_weight="1" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -186,11 +188,12 @@
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
                             android:text="Hãng xe: " />
-                        <TextView android:id="@+id/tvBrand"
+
+                        <TextView
+                            android:id="@+id/tvBrand"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Toyota" />
+                            android:layout_weight="1" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -210,11 +213,12 @@
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
                             android:text="Màu xe: " />
-                        <TextView android:id="@+id/tvColor"
+
+                        <TextView
+                            android:id="@+id/tvColor"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Đen" />
+                            android:layout_weight="1" />
                     </LinearLayout>
 
                     <View

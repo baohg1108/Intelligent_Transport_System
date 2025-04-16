@@ -29,8 +29,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class VehicleInfoActivity extends AppCompatActivity {
-
-    private TextView tvOwner, tvPlate, tvBrand, tvColor, tvLastScan, tvViolationInfo;
+    private int type;
+    private TextView tvOwner, tvPlate, tvBrand, tvColor, tvLastScan, tvViolationInfo, vehicleTypeText;
     private BottomNavigationView bottomNavigation;
     private TextView userName;
 
@@ -73,6 +73,7 @@ public class VehicleInfoActivity extends AppCompatActivity {
         btnConfirmVerification = findViewById(R.id.btnConfirmVerification);
         btnScanFace = findViewById(R.id.btnScanFace);
         etCCCD = findViewById(R.id.etCCCD);
+        vehicleTypeText = findViewById(R.id.vehicleTypeText);
 
 
         //__________________________________________________________________________________________________________
@@ -115,8 +116,9 @@ public class VehicleInfoActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         // Lay du lieu bunlde
-        Bundle bundle = intent.getBundleExtra("carInfor");
+        Bundle bundle = intent.getBundleExtra("Infor");
         if (bundle != null) {
+            type = bundle.getInt("type");
             String licensePlate = bundle.getString("licensePlate");
             String brand = bundle.getString("brand");
             String color = bundle.getString("color");
@@ -126,6 +128,12 @@ public class VehicleInfoActivity extends AppCompatActivity {
             tvBrand.setText(brand);
             tvColor.setText(color);
             tvOwner.setText(owner);
+
+            if (type == 1) {
+                vehicleTypeText.setText("Thông Tin Xe Hơi");
+            } else {
+                vehicleTypeText.setText("Thông Tin Xe Máy");
+            }
         }
 
     }
@@ -193,6 +201,7 @@ public class VehicleInfoActivity extends AppCompatActivity {
 
                             // Tạo Bundle chứa thông tin cần thiết
                             Bundle ticketData = new Bundle();
+                            ticketData.putInt("type", type);
                             ticketData.putString("licensePlate", tvPlate.getText().toString());
 //                            ticketData.putString("brand", tvBrand.getText().toString());
 //                            ticketData.putString("color", tvColor.getText().toString());
@@ -225,8 +234,21 @@ public class VehicleInfoActivity extends AppCompatActivity {
 
         // Nút quét khuôn mặt
         btnScanFace.setOnClickListener(v -> {
+
+
+            Bundle ticketData = new Bundle();
+            ticketData.putInt("type", type);
+            ticketData.putString("licensePlate", tvPlate.getText().toString());
+
+            Toast.makeText(VehicleInfoActivity.this, "licensePlate: " + tvPlate.getText().toString(), Toast.LENGTH_SHORT).show();
+
             // Tạo Intent để mở camera hoặc màn hình quét khuôn mặt
             Intent faceIntent = new Intent(VehicleInfoActivity.this, ScanPersonActivity.class);
+
+            faceIntent.putExtra("ticketData", ticketData);
+
+//            startActivity(faceIntent);
+
 
             // Định nghĩa requestCode, ví dụ 100
             int FACE_SCAN_REQUEST_CODE = 100;

@@ -131,7 +131,6 @@
                             android:id="@+id/tvPersonId"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="058205002155"
                             android:textColor="#333333"
                             android:textSize="16sp" />
                     </LinearLayout>
@@ -155,7 +154,6 @@
                             android:id="@+id/tvFullName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Nguyen Huu Tuan Khang"
                             android:textColor="#333333"
                             android:textSize="16sp" />
                     </LinearLayout>
@@ -179,7 +177,6 @@
                             android:id="@+id/tvBirthDate"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="03/12/2005"
                             android:textColor="#333333"
                             android:textSize="16sp" />
                     </LinearLayout>
@@ -203,7 +200,6 @@
                             android:id="@+id/tvGender"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Nam"
                             android:textColor="#333333"
                             android:textSize="16sp" />
                     </LinearLayout>
@@ -227,7 +223,6 @@
                             android:id="@+id/tvAddress"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Binh Duong"
                             android:textColor="#333333"
                             android:textSize="16sp" />
                     </LinearLayout>
@@ -251,7 +246,6 @@
                             android:id="@+id/tvPhoneNumber"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="0366408263"
                             android:textColor="#333333"
                             android:textSize="16sp" />
                     </LinearLayout>

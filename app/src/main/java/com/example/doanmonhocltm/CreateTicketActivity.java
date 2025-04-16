@@ -50,7 +50,7 @@ import android.Manifest;
 
 public class CreateTicketActivity extends AppCompatActivity {
     private static final int REQUEST_LOCATION_PERMISSION = 1;
-
+    private int type ;
     // Giao diện xử lý vi phạm
     private AutoCompleteTextView dropdownViolationType;
     private RecyclerView rvSelectedViolations;
@@ -117,6 +117,7 @@ public class CreateTicketActivity extends AppCompatActivity {
         Bundle bundle = intent.getBundleExtra("ticketData");
 
         if (bundle != null) {
+            type = bundle.getInt("type");
             String cccd = bundle.getString("driverCCCD");
             String plateNumber = bundle.getString("licensePlate");
             String driverName = bundle.getString("driverName");

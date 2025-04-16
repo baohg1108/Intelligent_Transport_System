@@ -2,7 +2,9 @@
 package com.example.doanmonhocltm.callapi;
 
 import com.example.doanmonhocltm.model.Car;
+import com.example.doanmonhocltm.model.CarViolationReport;
 import com.example.doanmonhocltm.model.LoginRequest;
+import com.example.doanmonhocltm.model.Motorcycle;
 import com.example.doanmonhocltm.model.ResultFaceRecognition;
 import com.example.doanmonhocltm.model.ResultLogin;
 
@@ -23,6 +25,9 @@ public interface ApiService {
     @GET("quet/api/vehicles/cars/{licensePlate}")
     Call<Car> getCarByLicensePlate(@Path("licensePlate") String licensePlate);
 
+    @GET("quet/api/vehicles/motorcycles/{licensePlate}")
+    Call<Motorcycle> getMotorcycleByLicensePlate(@Path("licensePlate") String licensePlate);
+
     @Multipart
     @POST("quet/api/face-recognition/identify")
     Call<ResultFaceRecognition> identifyFace(@Part MultipartBody.Part image);
@@ -30,5 +35,8 @@ public interface ApiService {
     @GET("/quet/api/person/{id}")
     Call<ResultFaceRecognition> getPersonById(@Path("id") String id);
 
+    @POST("/quet/api/car-violations")
+    Call<CarViolationReport> createCarViolationReport(@Body CarViolationReport carViolationReport);
 
 }
+

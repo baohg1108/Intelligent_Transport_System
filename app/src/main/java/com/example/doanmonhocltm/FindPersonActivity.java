@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -74,7 +75,12 @@ public class FindPersonActivity extends AppCompatActivity {
         btnScanIdCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Bundle ticketData = new Bundle();
+                ticketData.putInt("type", 3);
+                ticketData.putString("licensePlate", "");
+
                 Intent intent = new Intent(FindPersonActivity.this, ScanPersonActivity.class);
+                intent.putExtra("ticketData", ticketData);
                 startActivity(intent);
             }
         });
@@ -127,6 +133,7 @@ public class FindPersonActivity extends AppCompatActivity {
                             bundle.putString("phoneNumber", result.getPhoneNumber());
 
 
+
                             Intent intent = new Intent(FindPersonActivity.this, PersonInfoActivity.class);
 
                             intent.putExtra("result", bundle);
@@ -136,17 +143,22 @@ public class FindPersonActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<ResultFaceRecognition> call, Throwable t) {
-
+                            Toast.makeText(FindPersonActivity.this,
+                                    "Lỗi: "  ,
+                                    Toast.LENGTH_SHORT).show();
                         }
                     });
 
                 }
+                else
+                {
+                    Toast.makeText(FindPersonActivity.this,
+                            "Vui Lòng Nhập Số CCCD "  ,
+                            Toast.LENGTH_SHORT).show();
+                }
 
 
-                // Chuyển sang màn hình thông tin người dân
-                Intent intent = new Intent(FindPersonActivity.this, PersonInfoActivity.class);
-                intent.putExtra("citizenId", editTextCitizenId.getText().toString());
-                startActivity(intent);
+
             }
 
         });
