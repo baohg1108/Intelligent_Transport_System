@@ -77,9 +77,9 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="12dp"
-                    android:gravity="center_vertical">
+                    android:padding="12dp">
 
                     <ImageView
                         android:id="@+id/vehicleTypeIcon"
@@ -105,8 +105,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
                 app:cardBackgroundColor="#FFF"
                 app:cardCornerRadius="8dp"
                 app:cardElevation="4dp"
@@ -124,20 +124,22 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
                         android:layout_marginBottom="12dp"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
                         <ImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:src="@drawable/ic_person"
                             android:layout_marginEnd="12dp"
+                            android:src="@drawable/ic_person"
                             app:tint="#757575" />
+
                         <TextView
-                            android:textStyle="bold"
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:text="Chủ xe: " />
+                            android:text="Chủ xe: "
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/tvOwner"
@@ -149,20 +151,22 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
                         android:layout_marginBottom="12dp"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
                         <ImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:src="@drawable/ic_license_plate"
                             android:layout_marginEnd="12dp"
+                            android:src="@drawable/ic_license_plate"
                             app:tint="#757575" />
+
                         <TextView
-                            android:textStyle="bold"
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:text="Biển số: " />
+                            android:text="Biển số: "
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/tvPlate"
@@ -174,20 +178,22 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
                         android:layout_marginBottom="12dp"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
                         <ImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:src="@drawable/ic_brand"
                             android:layout_marginEnd="12dp"
+                            android:src="@drawable/ic_brand"
                             app:tint="#757575" />
+
                         <TextView
-                            android:textStyle="bold"
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:text="Hãng xe: " />
+                            android:text="Hãng xe: "
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/tvBrand"
@@ -199,20 +205,22 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
                         android:layout_marginBottom="12dp"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
                         <ImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:src="@drawable/ic_color"
                             android:layout_marginEnd="12dp"
+                            android:src="@drawable/ic_color"
                             app:tint="#757575" />
+
                         <TextView
-                            android:textStyle="bold"
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:text="Màu xe: " />
+                            android:text="Màu xe: "
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/tvColor"
@@ -224,61 +232,61 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="#E0E0E0"
                         android:layout_marginTop="4dp"
-                        android:layout_marginBottom="16dp"/>
+                        android:layout_marginBottom="16dp"
+                        android:background="#E0E0E0" />
 
                     <!-- Thông tin lần quét gần nhất -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="12dp"
-                        android:gravity="center_vertical">
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_clock"
-                            android:layout_marginEnd="12dp"
-                            app:tint="#757575" />
-                        <TextView
-                            android:textStyle="bold"
-                            android:layout_width="100dp"
-                            android:layout_height="wrap_content"
-                            android:text="Quét gần nhất: " />
-                        <TextView android:id="@+id/tvLastScan"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="15/03/2025 14:30" />
-                    </LinearLayout>
+                    <!--                    <LinearLayout-->
+                    <!--                        android:layout_width="match_parent"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:orientation="horizontal"-->
+                    <!--                        android:layout_marginBottom="12dp"-->
+                    <!--                        android:gravity="center_vertical">-->
+                    <!--                        <ImageView-->
+                    <!--                            android:layout_width="24dp"-->
+                    <!--                            android:layout_height="24dp"-->
+                    <!--                            android:src="@drawable/ic_clock"-->
+                    <!--                            android:layout_marginEnd="12dp"-->
+                    <!--                            app:tint="#757575" />-->
+                    <!--                        <TextView-->
+                    <!--                            android:textStyle="bold"-->
+                    <!--                            android:layout_width="100dp"-->
+                    <!--                            android:layout_height="wrap_content"-->
+                    <!--                            android:text="Quét gần nhất: " />-->
+                    <!--                        <TextView android:id="@+id/tvLastScan"-->
+                    <!--                            android:layout_width="0dp"-->
+                    <!--                            android:layout_height="wrap_content"-->
+                    <!--                            android:layout_weight="1"-->
+                    <!--                            android:text="15/03/2025 14:30" />-->
+                    <!--                    </LinearLayout>-->
 
                     <!-- Thông tin vi phạm gần đây -->
-                    <LinearLayout
-                        android:id="@+id/recentViolationContainer"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="12dp"
-                        android:gravity="center_vertical">
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_warning"
-                            android:layout_marginEnd="12dp"
-                            app:tint="#D32F2F" />
-                        <TextView
-                            android:textStyle="bold"
-                            android:layout_width="100dp"
-                            android:layout_height="wrap_content"
-                            android:text="Vi phạm:" />
-                        <TextView android:id="@+id/tvViolationInfo"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Không có vi phạm"
-                            android:textColor="#4CAF50" />
-                    </LinearLayout>
+                    <!--                    <LinearLayout-->
+                    <!--                        android:id="@+id/recentViolationContainer"-->
+                    <!--                        android:layout_width="match_parent"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:orientation="horizontal"-->
+                    <!--                        android:layout_marginBottom="12dp"-->
+                    <!--                        android:gravity="center_vertical">-->
+                    <!--                        <ImageView-->
+                    <!--                            android:layout_width="24dp"-->
+                    <!--                            android:layout_height="24dp"-->
+                    <!--                            android:src="@drawable/ic_warning"-->
+                    <!--                            android:layout_marginEnd="12dp"-->
+                    <!--                            app:tint="#D32F2F" />-->
+                    <!--                        <TextView-->
+                    <!--                            android:textStyle="bold"-->
+                    <!--                            android:layout_width="100dp"-->
+                    <!--                            android:layout_height="wrap_content"-->
+                    <!--                            android:text="Vi phạm:" />-->
+                    <!--                        <TextView android:id="@+id/tvViolationInfo"-->
+                    <!--                            android:layout_width="0dp"-->
+                    <!--                            android:layout_height="wrap_content"-->
+                    <!--                            android:layout_weight="1"-->
+                    <!--                            android:text="Không có vi phạm"-->
+                    <!--                            android:textColor="#4CAF50" />-->
+                    <!--                    </LinearLayout>-->
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -289,8 +297,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -301,13 +309,13 @@
                     android:id="@+id/btnViewViolations"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
                     android:background="@drawable/button_primary"
-                    android:padding="12dp"
-                    android:text="Xem Lịch Sử Vi Phạm"
-                    android:textColor="#FFFFFF"
                     android:drawableStart="@drawable/ic_history"
                     android:drawablePadding="8dp"
-                    android:layout_marginBottom="12dp" />
+                    android:padding="12dp"
+                    android:text="Xem Lịch Sử Vi Phạm"
+                    android:textColor="#FFFFFF" />
 
                 <!-- Nút tạo biên bản xử phạt -->
                 <Button
@@ -315,11 +323,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/button_warning"
+                    android:drawableStart="@drawable/ic_document"
+                    android:drawablePadding="8dp"
                     android:padding="12dp"
                     android:text="Tạo Biên Bản Xử Phạt"
-                    android:textColor="#FFFFFF"
-                    android:drawableStart="@drawable/ic_document"
-                    android:drawablePadding="8dp" />
+                    android:textColor="#FFFFFF" />
             </LinearLayout>
 
             <!-- Layout nhập CCCD và quét khuôn mặt (mặc định ẩn) -->
@@ -328,17 +336,17 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
+                android:visibility="gone"
                 app:cardBackgroundColor="#FFF"
                 app:cardCornerRadius="8dp"
                 app:cardElevation="4dp"
-                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/buttonsContainer"
-                app:layout_constraintBottom_toBottomOf="parent">
+                app:layout_constraintTop_toBottomOf="@+id/buttonsContainer">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -349,16 +357,16 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
                         android:text="Nhập thông tin người lái xe"
                         android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="16dp"/>
+                        android:textStyle="bold" />
 
                     <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                        android:layout_marginBottom="16dp">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etCCCD"
@@ -366,48 +374,48 @@
                             android:layout_height="wrap_content"
                             android:hint="Số CCCD/CMND"
                             android:inputType="number"
-                            android:maxLength="12"/>
+                            android:maxLength="12" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_marginBottom="16dp"
                         android:gravity="center"
-                        android:layout_marginBottom="16dp">
+                        android:orientation="horizontal">
 
                         <View
                             android:layout_width="0dp"
                             android:layout_height="1dp"
                             android:layout_weight="1"
-                            android:background="#E0E0E0"/>
+                            android:background="#E0E0E0" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Hoặc"
-                            android:textSize="14sp"
                             android:layout_marginStart="8dp"
-                            android:layout_marginEnd="8dp"/>
+                            android:layout_marginEnd="8dp"
+                            android:text="Hoặc"
+                            android:textSize="14sp" />
 
                         <View
                             android:layout_width="0dp"
                             android:layout_height="1dp"
                             android:layout_weight="1"
-                            android:background="#E0E0E0"/>
+                            android:background="#E0E0E0" />
                     </LinearLayout>
 
                     <Button
                         android:id="@+id/btnScanFace"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
                         android:background="@drawable/button_secondary"
-                        android:padding="12dp"
-                        android:text="Quét Khuôn Mặt"
-                        android:textColor="#FFFFFF"
                         android:drawableStart="@drawable/ic_face_scan"
                         android:drawablePadding="8dp"
-                        android:layout_marginBottom="16dp"/>
+                        android:padding="12dp"
+                        android:text="Quét Khuôn Mặt"
+                        android:textColor="#FFFFFF" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -418,21 +426,21 @@
                             android:id="@+id/btnCancelVerification"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
                             android:layout_weight="1"
                             android:background="@drawable/button_outline"
                             android:text="Hủy"
-                            android:textColor="#2145D2"
-                            android:layout_marginEnd="8dp"/>
+                            android:textColor="#2145D2" />
 
                         <Button
                             android:id="@+id/btnConfirmVerification"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
                             android:layout_weight="1"
                             android:background="@drawable/button_primary"
                             android:text="Xác Nhận"
-                            android:textColor="#FFFFFF"
-                            android:layout_marginStart="8dp"/>
+                            android:textColor="#FFFFFF" />
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>

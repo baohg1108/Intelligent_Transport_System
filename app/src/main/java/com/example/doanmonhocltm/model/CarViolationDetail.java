@@ -1,8 +1,28 @@
 package com.example.doanmonhocltm.model;
 
 public class CarViolationDetail {
+
     private String violationType;
-    private String description;
-    private String penaltyType;
-    private double fineAmount;
+    private float fineAmount;
+
+    public CarViolationDetail(String violationType, float fineAmount) {
+        this.violationType = violationType;
+        this.fineAmount = fineAmount;
+    }
+
+    public String getViolationType() {
+        return violationType;
+    }
+
+    public void setViolationType(String violationType) {
+        this.violationType = violationType;
+    }
+
+    public float getFineAmount() {
+        return fineAmount;
+    }
+
+    public void setFineAmount(float fineAmount) {
+        this.fineAmount = fineAmount;
+    }
 }

@@ -94,6 +94,8 @@ public class UserInfoActivity extends AppCompatActivity {
 
                     tvBirthDate.setText(formattedDate);
 
+//                    tvBirthDate.setText(result.getBirthDate());
+
                     tvUsername.setText(sessionManager.getUsername());
                 }
 

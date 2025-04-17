@@ -60,8 +60,8 @@ public class VehicleInfoActivity extends AppCompatActivity {
         tvPlate = findViewById(R.id.tvPlate);
         tvBrand = findViewById(R.id.tvBrand);
         tvColor = findViewById(R.id.tvColor);
-        tvLastScan = findViewById(R.id.tvLastScan);
-        tvViolationInfo = findViewById(R.id.tvViolationInfo);
+//        tvLastScan = findViewById(R.id.tvLastScan);
+//        tvViolationInfo = findViewById(R.id.tvViolationInfo);
         bottomNavigation = findViewById(R.id.bottomNavigation);
         bottomNavigation.setSelectedItemId(R.id.nav_tra_bien_so);
 
@@ -208,7 +208,6 @@ public class VehicleInfoActivity extends AppCompatActivity {
 //                            ticketData.putString("ownerName", tvOwner.getText().toString());
                             ticketData.putString("driverCCCD", resultFaceRecognition.getId());
                             ticketData.putString("driverName", resultFaceRecognition.getFullName());
-
 
                             // Chuyển sang màn hình tạo biên bản
                             Intent intent = new Intent(VehicleInfoActivity.this, CreateTicketActivity.class);

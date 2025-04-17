@@ -3,10 +3,14 @@ package com.example.doanmonhocltm.model;
 
 import androidx.annotation.NonNull;
 
+import com.example.doanmonhocltm.util.DateDeserializer;
+import com.google.gson.annotations.JsonAdapter;
+
 public class ResultFaceRecognition {
     private String id;
     private String fullName;
-    private long birthDate;
+    @JsonAdapter(DateDeserializer.class)
+    private Long  birthDate;
     private String gender;
     private String address;
     private String phoneNumber;
@@ -27,7 +31,7 @@ public class ResultFaceRecognition {
     }
 
 
-    public ResultFaceRecognition(String id, String fullName, long birthDate, String gender, String address, String phoneNumber, String facePath) {
+    public ResultFaceRecognition(String id, String fullName, Long birthDate, String gender, String address, String phoneNumber, String facePath) {
         this.id = id;
         this.fullName = fullName;
         this.birthDate = birthDate;
@@ -53,11 +57,11 @@ public class ResultFaceRecognition {
         this.fullName = fullName;
     }
 
-    public long getBirthDate() {
+    public Long getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(long birthDate) {
+    public void setBirthDate(Long  birthDate) {
         this.birthDate = birthDate;
     }
 
