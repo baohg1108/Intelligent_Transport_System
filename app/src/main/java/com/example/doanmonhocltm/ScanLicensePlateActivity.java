@@ -36,6 +36,7 @@ import com.example.doanmonhocltm.callapi.ApiService;
 import com.example.doanmonhocltm.model.Car;
 import com.example.doanmonhocltm.model.Motorcycle;
 import com.example.doanmonhocltm.model.ResultFaceRecognition;
+import com.example.doanmonhocltm.model.ScanLog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.mlkit.vision.common.InputImage;
@@ -57,7 +58,7 @@ public class ScanLicensePlateActivity extends AppCompatActivity {
     private static final String TAG = "Scan_Bike";
     private static final int REQUEST_CODE_PERMISSIONS = 10;
     private static final String[] REQUIRED_PERMISSIONS = new String[]{Manifest.permission.CAMERA};
-    private  String cleanedPlate;
+    private String cleanedPlate;
     private PreviewView previewView;
     private TextView tvLicensePlate;
     private Button btnCapture;
@@ -182,7 +183,24 @@ public class ScanLicensePlateActivity extends AppCompatActivity {
                                     bundle.putString("owner", resultFaceRecognition.getFullName());
 
                                     intent.putExtra("Infor", bundle);
-                                    startActivity(intent);
+                                    Call<ScanLog> scanLogCall = apiService.createCarScanLog(new ScanLog(car.getLicensePlate(), car.getOwnerId()));
+                                    scanLogCall.enqueue(new Callback<ScanLog>() {
+
+                                        @Override
+                                        public void onResponse(Call<ScanLog> call, Response<ScanLog> response) {
+                                            if (response.isSuccessful()) {
+                                                startActivity(intent);
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<ScanLog> call, Throwable t) {
+                                            Toast.makeText(ScanLicensePlateActivity.this,
+                                                    "Lỗi kết nối: " + t.getMessage(),
+                                                    Toast.LENGTH_SHORT).show();
+
+                                        }
+                                    });
                                 } else {
                                     Toast.makeText(ScanLicensePlateActivity.this,
                                             "Không tìm thấy thông tin xe. Mã lỗi: " + response.code(),
@@ -244,7 +262,23 @@ public class ScanLicensePlateActivity extends AppCompatActivity {
                                     bundle.putString("owner", resultFaceRecognition.getFullName());
 
                                     intent.putExtra("Infor", bundle);
-                                    startActivity(intent);
+                                    Call<ScanLog> scanLogCall = apiService.createMotorcycleScanLog(new ScanLog(motorcycle.getLicensePlate(), motorcycle.getOwnerId()));
+                                    scanLogCall.enqueue(new Callback<ScanLog>() {
+                                        @Override
+                                        public void onResponse(Call<ScanLog> call, Response<ScanLog> response) {
+                                            if (response.isSuccessful()) {
+                                                startActivity(intent);
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<ScanLog> call, Throwable t) {
+                                            Toast.makeText(ScanLicensePlateActivity.this,
+                                                    "Lỗi kết nối: " + t.getMessage(),
+                                                    Toast.LENGTH_SHORT).show();
+
+                                        }
+                                    });
                                 } else {
                                     Toast.makeText(ScanLicensePlateActivity.this,
                                             "Không tìm thấy thông tin xe. Mã lỗi: " + response.code(),
@@ -299,7 +333,7 @@ public class ScanLicensePlateActivity extends AppCompatActivity {
                     // Ví dụ: chuyển đến activity mới hoặc gửi request lên server
 
 
-                    cleanedPlate = detectedLicensePlate.replace("-", "").replace(".", "").replace(" ", "");
+//                    cleanedPlate = detectedLicensePlate.replace("-", "").replace(".", "").replace(" ", "");
 
 
                     Log.e("BienSoXe", cleanedPlate);

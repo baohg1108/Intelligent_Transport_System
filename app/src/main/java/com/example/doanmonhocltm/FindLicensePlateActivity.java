@@ -29,6 +29,7 @@ import com.example.doanmonhocltm.callapi.SessionManager;
 import com.example.doanmonhocltm.model.Car;
 import com.example.doanmonhocltm.model.Motorcycle;
 import com.example.doanmonhocltm.model.ResultFaceRecognition;
+import com.example.doanmonhocltm.model.ScanLog;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -118,9 +119,29 @@ public class FindLicensePlateActivity extends AppCompatActivity {
                                     bundle.putString("brand", car.getBrand());
                                     bundle.putString("color", car.getColor());
                                     bundle.putString("owner", resultFaceRecognition.getFullName());
-
                                     intent.putExtra("Infor", bundle);
-                                    startActivity(intent);
+
+
+                                    Call<ScanLog> scanLogCall = apiService.createCarScanLog(new ScanLog(car.getLicensePlate(), car.getOwnerId()));
+                                    scanLogCall.enqueue(new Callback<ScanLog>() {
+
+                                        @Override
+                                        public void onResponse(Call<ScanLog> call, Response<ScanLog> response) {
+                                            if (response.isSuccessful()) {
+                                                startActivity(intent);
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<ScanLog> call, Throwable t) {
+                                            Toast.makeText(FindLicensePlateActivity.this,
+                                                    "Lỗi kết nối: " + t.getMessage(),
+                                                    Toast.LENGTH_SHORT).show();
+
+                                        }
+                                    });
+
+//                                    startActivity(intent);
                                 } else {
                                     Toast.makeText(FindLicensePlateActivity.this,
                                             "Không tìm thấy thông tin xe. Mã lỗi: " + response.code(),
@@ -131,7 +152,9 @@ public class FindLicensePlateActivity extends AppCompatActivity {
 
                             @Override
                             public void onFailure(Call<ResultFaceRecognition> call, Throwable t) {
-
+                                Toast.makeText(FindLicensePlateActivity.this,
+                                        "Lỗi kết nối: " + t.getMessage(),
+                                        Toast.LENGTH_SHORT).show();
                             }
                         });
 
@@ -182,7 +205,25 @@ public class FindLicensePlateActivity extends AppCompatActivity {
                                     bundle.putString("owner", resultFaceRecognition.getFullName());
 
                                     intent.putExtra("Infor", bundle);
-                                    startActivity(intent);
+
+                                    Call<ScanLog> scanLogCall = apiService.createMotorcycleScanLog(new ScanLog(motorcycle.getLicensePlate(), motorcycle.getOwnerId()));
+                                    scanLogCall.enqueue(new Callback<ScanLog>() {
+                                        @Override
+                                        public void onResponse(Call<ScanLog> call, Response<ScanLog> response) {
+                                            if (response.isSuccessful()) {
+                                                startActivity(intent);
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<ScanLog> call, Throwable t) {
+                                            Toast.makeText(FindLicensePlateActivity.this,
+                                                    "Lỗi kết nối: " + t.getMessage(),
+                                                    Toast.LENGTH_SHORT).show();
+
+                                        }
+                                    });
+//                                    startActivity(intent);
                                 } else {
                                     Toast.makeText(FindLicensePlateActivity.this,
                                             "Không tìm thấy thông tin xe. Mã lỗi: " + response.code(),

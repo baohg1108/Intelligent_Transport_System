@@ -12,14 +12,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
 import com.example.doanmonhocltm.callapi.ApiClient;
 import com.example.doanmonhocltm.callapi.ApiService;
 import com.example.doanmonhocltm.callapi.SessionManager;
+import com.example.doanmonhocltm.model.LoginHistory;
 import com.example.doanmonhocltm.model.LoginRequest;
 import com.example.doanmonhocltm.model.ResultFaceRecognition;
 import com.example.doanmonhocltm.model.ResultLogin;
+import com.example.doanmonhocltm.util.DeviceUtil;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -54,9 +58,7 @@ public class LoginActivity extends AppCompatActivity {
 
             // Validate input
             if (usernameInput.isEmpty() || password.isEmpty()) {
-                Toast.makeText(LoginActivity.this,
-                        "Vui lòng nhập đầy đủ thông tin đăng nhập",
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "Vui lòng nhập đầy đủ thông tin đăng nhập", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -89,24 +91,36 @@ public class LoginActivity extends AppCompatActivity {
                                 showLoading(false);
 
                                 if (response.isSuccessful() && response.body() != null) {
-                                    Toast.makeText(LoginActivity.this,
-                                            "Đăng Nhập Thành Công",
-                                            Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(LoginActivity.this, "Đăng Nhập Thành Công", Toast.LENGTH_SHORT).show();
                                     String namePerson = response.body().getFullName();
 
                                     sessionManager.saveUserSession(token, userId, resUsername);
                                     // Lưu thêm họ tên
                                     sessionManager.saveNamePerson(namePerson);
 
-                                    // Chuyển màn
-                                    Intent intent = new Intent(LoginActivity.this, FindLicensePlateActivity.class);
-                                    startActivity(intent);
-                                    finish(); // Đóng LoginActivity khi đã đăng nhập thành công
-                                } else {
+                                    Call<LoginHistory> loginHistoryCall = apiService.createLoginHistory(new LoginHistory(userId, DeviceUtil.getIPAddress(true), DeviceUtil.getDeviceInfo(), "SUCCESS"));
+                                    loginHistoryCall.enqueue(new Callback<LoginHistory>() {
+                                        @Override
+                                        public void onResponse(Call<LoginHistory> call, Response<LoginHistory> response) {
+                                            if (response.isSuccessful()) {
+                                                // Chuyển màn
+                                                Toast.makeText(LoginActivity.this, "Đăng Nhập Thành Công", Toast.LENGTH_SHORT).show();
+                                                Intent intent = new Intent(LoginActivity.this, FindLicensePlateActivity.class);
+                                                startActivity(intent);
+                                                finish(); // Đóng LoginActivity khi đã đăng nhập thành công
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<LoginHistory> call, Throwable t) {
+                                            Toast.makeText(LoginActivity.this, "Server Đang Gặp Lỗi", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+
+                                }
+                                else {
                                     System.out.println("⚠️ Không lấy được thông tin namePerson");
-                                    Toast.makeText(LoginActivity.this,
-                                            "Không lấy được thông tin namePerson",
-                                            Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(LoginActivity.this, "Không lấy được thông tin namePerson", Toast.LENGTH_SHORT).show();
                                 }
                             }
 
@@ -114,22 +128,16 @@ public class LoginActivity extends AppCompatActivity {
                             public void onFailure(Call<ResultFaceRecognition> call, Throwable t) {
                                 // Hide loading indicator
                                 showLoading(false);
-
-                                t.printStackTrace();
-                                System.out.println("⚠️ Không lấy được thông tin namePerson");
-                                Toast.makeText(LoginActivity.this,
-                                        "Không lấy được thông tin namePerson",
-                                        Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, "Server Đang Gặp Lỗi", Toast.LENGTH_SHORT).show();
                             }
                         });
-                    } else {
+                    }
+                    else {
                         // Hide loading indicator
                         showLoading(false);
 
                         System.out.println("❌ Đăng nhập thất bại: " + response.code());
-                        Toast.makeText(LoginActivity.this,
-                                "Tên Đăng Nhập Hoặc Mật Khẩu Không Đúng",
-                                Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "Tên Đăng Nhập Hoặc Mật Khẩu Không Đúng", Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -137,10 +145,7 @@ public class LoginActivity extends AppCompatActivity {
                 public void onFailure(Call<ResultLogin> call, Throwable t) {
                     // Hide loading indicator
                     showLoading(false);
-
-                    Toast.makeText(LoginActivity.this,
-                            "Server Đang Gặp Lỗi",
-                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Server Đang Gặp Lỗi", Toast.LENGTH_SHORT).show();
                 }
             });
         });

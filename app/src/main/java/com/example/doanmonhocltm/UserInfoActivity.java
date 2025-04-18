@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -19,6 +20,7 @@ import com.example.doanmonhocltm.callapi.ApiClient;
 import com.example.doanmonhocltm.callapi.ApiService;
 import com.example.doanmonhocltm.callapi.SessionManager;
 import com.example.doanmonhocltm.model.Car;
+import com.example.doanmonhocltm.model.Logout;
 import com.example.doanmonhocltm.model.ResultFaceRecognition;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
@@ -71,8 +73,7 @@ public class UserInfoActivity extends AppCompatActivity {
         setupEventListeners();
     }
 
-    private void loadUserData()
-    {
+    private void loadUserData() {
         SessionManager sessionManager = new SessionManager(UserInfoActivity.this);
         String userId = sessionManager.getUserId();
 
@@ -142,12 +143,31 @@ public class UserInfoActivity extends AppCompatActivity {
         userName.setText(sessionManager.getNamePerson());
         //__________________________________________________________________________________________________________
     }
+
     private void setupEventListeners() {
 
         btnLogout.setOnClickListener(v -> {
             SessionManager sessionManager = new SessionManager(UserInfoActivity.this);
-            sessionManager.clearSession();
-            startActivity(new Intent(UserInfoActivity.this, LoginActivity.class));
+            ApiService apiService = ApiClient.getClient(UserInfoActivity.this).create(ApiService.class);
+            Call<Logout> logoutCall = apiService.logout(sessionManager.getUserId());
+            logoutCall.enqueue(new Callback<Logout>() {
+                @Override
+                public void onResponse(Call<Logout> call, Response<Logout> response) {
+                    Logout result = response.body();
+                    if (result.getStatus() == 1) {
+                        sessionManager.clearSession();
+                        Toast.makeText(UserInfoActivity.this, "Đăng Xuất Thành Công", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(UserInfoActivity.this, LoginActivity.class));
+                    } else {
+                        Toast.makeText(UserInfoActivity.this, "Lỗi Khi Đăng Xuẩt", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Logout> call, Throwable t) {
+                    Toast.makeText(UserInfoActivity.this, "Server Đang Gặp Lỗi", Toast.LENGTH_SHORT).show();
+                }
+            });
         });
 
         btnExpandPersonal.setOnClickListener(v -> {

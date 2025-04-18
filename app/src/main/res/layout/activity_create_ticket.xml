@@ -42,14 +42,6 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <ImageButton
-                android:id="@+id/btnSave"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_save"
-                app:tint="#FFFFFF"
-                tools:ignore="SpeakableTextPresentCheck" />
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 
