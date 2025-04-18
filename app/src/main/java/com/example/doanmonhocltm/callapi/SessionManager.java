@@ -2,6 +2,9 @@ package com.example.doanmonhocltm.callapi;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 
 public class SessionManager {
     private static final String PREF_NAME = "my_app";
@@ -11,6 +14,10 @@ public class SessionManager {
     private static final String KEY_USERNAME = "username";
     private static final String KEY_NAMEPERSON = "nameperson";
 
+    private static final String KEY_USERMAIL = "usermail";
+
+    private static final String KEY_AVT = "avt";
+
     private SharedPreferences prefs;
 
     public SessionManager(Context context) {
@@ -18,17 +25,36 @@ public class SessionManager {
     }
 
     // Gọi khi login để lưu token, user ID và username
-    public void saveUserSession(String token, String userId, String username) {
+    public void saveUserSession(String token, String userId, String username, String namePerson, String usermail) {
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(KEY_TOKEN, token);
         editor.putString(KEY_USER_ID, userId);
         editor.putString(KEY_USERNAME, username);
+        editor.putString(KEY_USERMAIL, usermail);
+        editor.putString(KEY_NAMEPERSON, namePerson);
         editor.apply();
     }
 
     public void saveToken(String token) {
         this.prefs.edit().putString(KEY_TOKEN, token).apply();
     }
+
+    public void saveImageToPrefs(byte[] imageBytes) {
+        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(KEY_AVT, encodedImage);
+        editor.apply();
+    }
+
+    public Bitmap loadImageFromPrefs() {
+        String encodedImage = prefs.getString(KEY_AVT, null);
+        if (encodedImage != null) {
+            byte[] imageBytes = Base64.decode(encodedImage, Base64.DEFAULT);
+            return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+        }
+        return null;
+    }
+
 
     // Gọi khi lấy thêm họ tên người dùng
     public void saveNamePerson(String namePerson) {
@@ -50,6 +76,10 @@ public class SessionManager {
 
     public String getNamePerson() {
         return prefs.getString(KEY_NAMEPERSON, null);
+    }
+
+    public String getUserMail() {
+        return prefs.getString(KEY_USERMAIL, null);
     }
 
     // Xóa toàn bộ session khi logout

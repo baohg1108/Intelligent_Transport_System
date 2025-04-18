@@ -2,6 +2,7 @@
 package com.example.doanmonhocltm;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +25,7 @@ import com.example.doanmonhocltm.callapi.SessionManager;
 import com.example.doanmonhocltm.model.ResultFaceRecognition;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -42,6 +44,9 @@ public class VehicleInfoActivity extends AppCompatActivity {
     private Button btnConfirmVerification;
     private Button btnScanFace;
     private EditText etCCCD;
+
+    private CircleImageView userAvatar;
+
 
 
     @Override
@@ -75,6 +80,8 @@ public class VehicleInfoActivity extends AppCompatActivity {
         etCCCD = findViewById(R.id.etCCCD);
         vehicleTypeText = findViewById(R.id.vehicleTypeText);
 
+        userAvatar = findViewById(R.id.userAvatar);
+
 
         //__________________________________________________________________________________________________________
 
@@ -86,6 +93,13 @@ public class VehicleInfoActivity extends AppCompatActivity {
         userName = findViewById(R.id.userName);
         userName.setText(sessionManager.getNamePerson());
         //__________________________________________________________________________________________________________
+
+        //__________________________________________________________________________________________________________
+        userAvatar = findViewById(R.id.userAvatar);
+        Bitmap image = sessionManager.loadImageFromPrefs();
+        userAvatar.setImageBitmap(image);
+        //__________________________________________________________________________________________________________
+
 
         bottomNavigation.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override

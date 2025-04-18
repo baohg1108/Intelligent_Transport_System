@@ -1,6 +1,7 @@
 package com.example.doanmonhocltm;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +23,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -36,6 +38,9 @@ public class FindPersonActivity extends AppCompatActivity {
     private TextInputEditText editTextCitizenId;
 
     private TextView userName;
+    private CircleImageView userAvatar;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,11 +67,17 @@ public class FindPersonActivity extends AppCompatActivity {
         bottomNavigation.setSelectedItemId(R.id.nav_tra_nguoi_lai);
         btnLookupCitizen = findViewById(R.id.btnLookupCitizen);
         editTextCitizenId = findViewById(R.id.editTextCitizenId);
+        userAvatar = findViewById(R.id.userAvatar);
 
         //__________________________________________________________________________________________________________
         SessionManager sessionManager = new SessionManager(FindPersonActivity.this);
         userName = findViewById(R.id.userName);
         userName.setText(sessionManager.getNamePerson());
+        //__________________________________________________________________________________________________________
+        //__________________________________________________________________________________________________________
+        userAvatar = findViewById(R.id.userAvatar);
+        Bitmap image = sessionManager.loadImageFromPrefs();
+        userAvatar.setImageBitmap(image);
         //__________________________________________________________________________________________________________
     }
 
@@ -131,7 +142,7 @@ public class FindPersonActivity extends AppCompatActivity {
                             bundle.putString("gender", result.getGender());
                             bundle.putString("address", result.getAddress());
                             bundle.putString("phoneNumber", result.getPhoneNumber());
-
+                            bundle.putString("facePath", result.getFacePath());
 
 
                             Intent intent = new Intent(FindPersonActivity.this, PersonInfoActivity.class);

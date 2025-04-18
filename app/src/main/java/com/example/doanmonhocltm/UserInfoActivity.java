@@ -1,6 +1,7 @@
 package com.example.doanmonhocltm;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -98,6 +99,9 @@ public class UserInfoActivity extends AppCompatActivity {
 //                    tvBirthDate.setText(result.getBirthDate());
 
                     tvUsername.setText(sessionManager.getUsername());
+
+
+                    tvEmail.setText(new SessionManager(UserInfoActivity.this).getUserMail());
                 }
 
             }
@@ -126,6 +130,7 @@ public class UserInfoActivity extends AppCompatActivity {
         tvBirthDate = findViewById(R.id.tvBirthDate);
         tvPhone = findViewById(R.id.tvPhone);
         tvAddress = findViewById(R.id.tvAddress);
+        tvEmail = findViewById(R.id.tvEmail);
 
         // Account info section
         tvAccountHeader = findViewById(R.id.tvAccountHeader);
@@ -142,6 +147,12 @@ public class UserInfoActivity extends AppCompatActivity {
         userName = findViewById(R.id.userName);
         userName.setText(sessionManager.getNamePerson());
         //__________________________________________________________________________________________________________
+        //__________________________________________________________________________________________________________
+        userAvatar = findViewById(R.id.userAvatar);
+        Bitmap image = sessionManager.loadImageFromPrefs();
+        userAvatar.setImageBitmap(image);
+        //__________________________________________________________________________________________________________
+
     }
 
     private void setupEventListeners() {

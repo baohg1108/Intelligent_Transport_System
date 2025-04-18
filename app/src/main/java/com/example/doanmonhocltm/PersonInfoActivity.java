@@ -1,7 +1,10 @@
 package com.example.doanmonhocltm;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -13,12 +16,21 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.doanmonhocltm.callapi.ApiClient;
+import com.example.doanmonhocltm.callapi.ApiService;
 import com.example.doanmonhocltm.callapi.SessionManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PersonInfoActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigation;
@@ -30,6 +42,8 @@ public class PersonInfoActivity extends AppCompatActivity {
     private TextView tvAddress;
     private TextView tvPhoneNumber;
     private ImageView personImage;
+
+    private CircleImageView userAvatar;
 
     private TextView userName;
 
@@ -46,6 +60,10 @@ public class PersonInfoActivity extends AppCompatActivity {
 
         // Khởi tạo các thành phần giao diện
         initializeViews();
+
+
+
+
 
         // Đặt dữ liệu cho các thành phần giao diện
         Intent intent = getIntent();
@@ -69,6 +87,40 @@ public class PersonInfoActivity extends AppCompatActivity {
             tvGender.setText(gender);
             tvAddress.setText(address);
             tvPhoneNumber.setText(phoneNumber);
+
+            //_________________________________________________________________________________________
+
+            ApiService apiService = ApiClient.getClient(PersonInfoActivity.this).create(ApiService.class);
+
+            Call<ResponseBody>  imageCall = apiService.getImage(bundle.getString("facePath"));
+
+            imageCall.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        byte[] imageBytes;
+                        try {
+                            imageBytes = response.body().bytes();
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+                            personImage.setImageBitmap(bitmap); // gán vào ImageView
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        Log.e("API", "Image not found or error: " + response.code());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Log.e("API", "Request failed: " + t.getMessage());
+                }
+            });
+
+
+
+
+            //_________________________________________________________________________________________
 
         }
 
@@ -120,7 +172,13 @@ public class PersonInfoActivity extends AppCompatActivity {
         SessionManager sessionManager = new SessionManager(PersonInfoActivity.this);
         userName = findViewById(R.id.userName);
         userName.setText(sessionManager.getNamePerson());
-//__________________________________________________________________________________________________________
+        //__________________________________________________________________________________________________________
+
+        //__________________________________________________________________________________________________________
+        userAvatar = findViewById(R.id.userAvatar);
+        Bitmap image = sessionManager.loadImageFromPrefs();
+        userAvatar.setImageBitmap(image);
+        //__________________________________________________________________________________________________________
 
 
     }

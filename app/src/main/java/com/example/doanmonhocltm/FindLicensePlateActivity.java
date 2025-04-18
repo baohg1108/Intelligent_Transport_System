@@ -4,6 +4,7 @@ package com.example.doanmonhocltm;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -34,6 +35,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.*;
 
 public class FindLicensePlateActivity extends AppCompatActivity {
@@ -46,6 +48,9 @@ public class FindLicensePlateActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigation;
 
     private TextView userName;
+
+    private CircleImageView userAvatar;
+
 
     private void showCustomVehicleTypeDialog() {
         // Tạo dialog với custom layout
@@ -291,6 +296,14 @@ public class FindLicensePlateActivity extends AppCompatActivity {
         SessionManager sessionManager = new SessionManager(FindLicensePlateActivity.this);
         userName = findViewById(R.id.userName);
         userName.setText(sessionManager.getNamePerson());
+
+        //__________________________________________________________________________________________________________
+        userAvatar = findViewById(R.id.userAvatar);
+        Bitmap image = sessionManager.loadImageFromPrefs();
+        userAvatar.setImageBitmap(image);
+        //__________________________________________________________________________________________________________
+
+
     }
 
     private void setupEventListeners() {

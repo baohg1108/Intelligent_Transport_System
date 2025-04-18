@@ -11,7 +11,9 @@ import com.example.doanmonhocltm.model.MotorcycleViolationReport;
 import com.example.doanmonhocltm.model.ResultFaceRecognition;
 import com.example.doanmonhocltm.model.ResultLogin;
 import com.example.doanmonhocltm.model.ScanLog;
+import com.example.doanmonhocltm.model.User;
 
+import okhttp3.ResponseBody;
 import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -58,5 +60,10 @@ public interface ApiService {
     @PATCH("/quet/api/auth/logout/{accountId}")
     Call<Logout> logout(@Path("accountId") String accountId);
 
+    @GET("/quet/api/images/{filename}")
+    Call<ResponseBody> getImage(@Path("filename") String filename);
+
+    @GET("/quet/api/account/{id}")
+    Call<User> getUserMail(@Path("id") String id);
 }
 
