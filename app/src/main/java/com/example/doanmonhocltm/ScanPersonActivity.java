@@ -458,7 +458,7 @@ public class ScanPersonActivity extends AppCompatActivity {
             bundle.putString("gender", result.getGender());
             bundle.putString("address", result.getAddress());
             bundle.putString("phoneNumber", result.getPhoneNumber());
-
+            bundle.putString("facePath", result.getFacePath());
             Intent intent = new Intent(ScanPersonActivity.this, PersonInfoActivity.class);
             intent.putExtra("result", bundle);
             startActivity(intent);

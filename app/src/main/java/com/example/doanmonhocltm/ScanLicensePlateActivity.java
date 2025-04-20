@@ -37,6 +37,7 @@ import com.example.doanmonhocltm.model.Car;
 import com.example.doanmonhocltm.model.Motorcycle;
 import com.example.doanmonhocltm.model.ResultFaceRecognition;
 import com.example.doanmonhocltm.model.ScanLog;
+import com.example.doanmonhocltm.model.Vehicles;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.mlkit.vision.common.InputImage;
@@ -156,165 +157,106 @@ public class ScanLicensePlateActivity extends AppCompatActivity {
             Toast.makeText(this, "Vui lòng nhập biển số xe", Toast.LENGTH_SHORT).show();
             return;
         }
+        final int type = vehicleType.equals("Xe ô tô") ? 1 :
+                vehicleType.equals("Xe máy") ? 2 : -1;
+        if ( type == -1)
+        {
+            Toast.makeText(this, "Vui lòng chọn loại phương tiện", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        ApiService apiService = ApiClient.getClient(ScanLicensePlateActivity.this).create(ApiService.class);
+        Call<Vehicles> vehiclesCall = null;
 
-        if (vehicleType.equals("Xe ô tô")) {
-            ApiService apiService = ApiClient.getClient(ScanLicensePlateActivity.this).create(ApiService.class);
-            Call<Car> carCall = apiService.getCarByLicensePlate(vehicleInfo);
-            carCall.enqueue(new Callback<Car>() {
-                @Override
-                public void onResponse(Call<Car> call, Response<Car> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        Car car = response.body();
+        if (type == 1) {
+            vehiclesCall = apiService.getCar(vehicleInfo);
+        } else if (type == 2) {
+            vehiclesCall = apiService.getMotorcycle(vehicleInfo);
+        }
 
-                        Call<ResultFaceRecognition> resultFaceRecognitionCall = apiService.getPersonById(car.getOwnerId());
+        vehiclesCall.enqueue(new Callback<Vehicles>() {
+            @Override
+            public void onResponse(Call<Vehicles> call, Response<Vehicles> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Vehicles vehicles = response.body();
 
-                        resultFaceRecognitionCall.enqueue(new Callback<ResultFaceRecognition>() {
-                            @Override
-                            public void onResponse(Call<ResultFaceRecognition> call, Response<ResultFaceRecognition> response) {
-                                if (response.isSuccessful()) {
-                                    ResultFaceRecognition resultFaceRecognition = response.body();
-                                    // Chuyển sang màn hình VehicleInfoActivity
-                                    Intent intent = new Intent(ScanLicensePlateActivity.this, VehicleInfoActivity.class);
-                                    Bundle bundle = new Bundle();
-                                    bundle.putInt("type", 1); // 1: xe hoi
-                                    bundle.putString("licensePlate", car.getLicensePlate());
-                                    bundle.putString("brand", car.getBrand());
-                                    bundle.putString("color", car.getColor());
-                                    bundle.putString("owner", resultFaceRecognition.getFullName());
+                    Call<ResultFaceRecognition> resultFaceRecognitionCall = apiService.getPersonById(vehicles.getOwnerId());
 
-                                    intent.putExtra("Infor", bundle);
-                                    Call<ScanLog> scanLogCall = apiService.createCarScanLog(new ScanLog(car.getLicensePlate(), car.getOwnerId()));
-                                    scanLogCall.enqueue(new Callback<ScanLog>() {
+                    resultFaceRecognitionCall.enqueue(new Callback<ResultFaceRecognition>() {
+                        @Override
+                        public void onResponse(Call<ResultFaceRecognition> call, Response<ResultFaceRecognition> response) {
+                            if (response.isSuccessful()) {
+                                ResultFaceRecognition resultFaceRecognition = response.body();
+                                // Chuyển sang màn hình VehicleInfoActivity
+                                Intent intent = new Intent(ScanLicensePlateActivity.this, VehicleInfoActivity.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putInt("type", type); // 1: xe hoi
+                                bundle.putString("licensePlate", vehicles.getLicensePlate());
+                                bundle.putString("brand", vehicles.getBrand());
+                                bundle.putString("color", vehicles.getColor());
+                                bundle.putString("owner", resultFaceRecognition.getFullName());
+                                intent.putExtra("Infor", bundle);
 
-                                        @Override
-                                        public void onResponse(Call<ScanLog> call, Response<ScanLog> response) {
-                                            if (response.isSuccessful()) {
-                                                startActivity(intent);
-                                            }
+
+//                                Call<ScanLog> scanLogCall = apiService.createCarScanLog(new ScanLog(vehicles.getLicensePlate(), vehicles.getOwnerId()));
+                                Call<ScanLog> scanLogCall = (type == 1) ?
+                                        apiService.createCarScanLog(new ScanLog(vehicles.getLicensePlate(), vehicles.getOwnerId())) : apiService.createMotorcycleScanLog(new ScanLog(vehicles.getLicensePlate(), vehicles.getOwnerId()));
+                                scanLogCall.enqueue(new Callback<ScanLog>() {
+
+                                    @Override
+                                    public void onResponse(Call<ScanLog> call, Response<ScanLog> response) {
+                                        if (response.isSuccessful()) {
+                                            startActivity(intent);
                                         }
-
-                                        @Override
-                                        public void onFailure(Call<ScanLog> call, Throwable t) {
+                                        else
+                                        {
                                             Toast.makeText(ScanLicensePlateActivity.this,
-                                                    "Lỗi kết nối: " + t.getMessage(),
+                                                    "Không tìm thấy thông tin xe. Mã lỗi: " + response.code(),
                                                     Toast.LENGTH_SHORT).show();
-
                                         }
-                                    });
-                                } else {
-                                    Toast.makeText(ScanLicensePlateActivity.this,
-                                            "Không tìm thấy thông tin xe. Mã lỗi: " + response.code(),
-                                            Toast.LENGTH_SHORT).show();
+                                    }
 
-                                }
-                            }
+                                    @Override
+                                    public void onFailure(Call<ScanLog> call, Throwable t) {
+                                        Toast.makeText(ScanLicensePlateActivity.this,
+                                                "Lỗi kết nối: " + t.getMessage(),
+                                                Toast.LENGTH_SHORT).show();
 
-                            @Override
-                            public void onFailure(Call<ResultFaceRecognition> call, Throwable t) {
-
-                            }
-                        });
-
-                    } else {
-                        Toast.makeText(ScanLicensePlateActivity.this,
-                                "Không tìm thấy thông tin xe. Mã lỗi: " + response.code(),
-                                Toast.LENGTH_SHORT).show();
-                        System.out.println("Response error code: " + response.code());
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<Car> call, Throwable t) {
-                    Toast.makeText(ScanLicensePlateActivity.this,
-                            "Lỗi kết nối: " + t.getMessage(),
-                            Toast.LENGTH_SHORT).show();
-                    t.printStackTrace();
-                }
-            });
-        } else if (vehicleType.equals("Xe máy")) {
-//            // Xử lý tra cứu cho xe máy
-//            Toast.makeText(this, "Chức năng tra cứu xe máy đang được phát triển", Toast.LENGTH_SHORT).show();
-
-
-            ApiService apiService = ApiClient.getClient(ScanLicensePlateActivity.this).create(ApiService.class);
-            Call<Motorcycle> carCall = apiService.getMotorcycleByLicensePlate(vehicleInfo);
-            carCall.enqueue(new Callback<Motorcycle>() {
-
-                @Override
-                public void onResponse(Call<Motorcycle> call, Response<Motorcycle> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        Motorcycle motorcycle = response.body();
-
-                        Call<ResultFaceRecognition> resultFaceRecognitionCall = apiService.getPersonById(motorcycle.getOwnerId());
-
-                        resultFaceRecognitionCall.enqueue(new Callback<ResultFaceRecognition>() {
-                            @Override
-                            public void onResponse(Call<ResultFaceRecognition> call, Response<ResultFaceRecognition> response) {
-                                if (response.isSuccessful()) {
-                                    ResultFaceRecognition resultFaceRecognition = response.body();
-                                    // Chuyển sang màn hình VehicleInfoActivity
-                                    Intent intent = new Intent(ScanLicensePlateActivity.this, VehicleInfoActivity.class);
-                                    Bundle bundle = new Bundle();
-                                    bundle.putInt("type", 2);
-                                    bundle.putString("licensePlate", motorcycle.getLicensePlate());
-                                    bundle.putString("brand", motorcycle.getBrand());
-                                    bundle.putString("color", motorcycle.getColor());
-                                    bundle.putString("owner", resultFaceRecognition.getFullName());
-
-                                    intent.putExtra("Infor", bundle);
-                                    Call<ScanLog> scanLogCall = apiService.createMotorcycleScanLog(new ScanLog(motorcycle.getLicensePlate(), motorcycle.getOwnerId()));
-                                    scanLogCall.enqueue(new Callback<ScanLog>() {
-                                        @Override
-                                        public void onResponse(Call<ScanLog> call, Response<ScanLog> response) {
-                                            if (response.isSuccessful()) {
-                                                startActivity(intent);
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onFailure(Call<ScanLog> call, Throwable t) {
-                                            Toast.makeText(ScanLicensePlateActivity.this,
-                                                    "Lỗi kết nối: " + t.getMessage(),
-                                                    Toast.LENGTH_SHORT).show();
-
-                                        }
-                                    });
-                                } else {
-                                    Toast.makeText(ScanLicensePlateActivity.this,
-                                            "Không tìm thấy thông tin xe. Mã lỗi: " + response.code(),
-                                            Toast.LENGTH_SHORT).show();
-
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Call<ResultFaceRecognition> call, Throwable t) {
+                                    }
+                                });
+                            } else {
                                 Toast.makeText(ScanLicensePlateActivity.this,
                                         "Không tìm thấy thông tin xe. Mã lỗi: " + response.code(),
                                         Toast.LENGTH_SHORT).show();
-                                System.out.println("Response error code: " + response.code());
+
                             }
-                        });
+                        }
 
-                    } else {
-                        Toast.makeText(ScanLicensePlateActivity.this,
-                                "Không tìm thấy thông tin xe. Mã lỗi: " + response.code(),
-                                Toast.LENGTH_SHORT).show();
-                        System.out.println("Response error code: " + response.code());
-                    }
+                        @Override
+                        public void onFailure(Call<ResultFaceRecognition> call, Throwable t) {
+                            Toast.makeText(ScanLicensePlateActivity.this,
+                                    "Lỗi kết nối: " + t.getMessage(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
 
-                }
-
-                @Override
-                public void onFailure(Call<Motorcycle> call, Throwable t) {
+                } else {
                     Toast.makeText(ScanLicensePlateActivity.this,
-                            "Lỗi kết nối: " + t.getMessage(),
+                            "Không tìm thấy thông tin xe. Mã lỗi: " + response.code(),
                             Toast.LENGTH_SHORT).show();
-                    t.printStackTrace();
-
+                    System.out.println("Response error code: " + response.code());
                 }
-            });
-        }
+            }
+
+            @Override
+            public void onFailure(Call<Vehicles> call, Throwable t) {
+                Toast.makeText(ScanLicensePlateActivity.this,
+                        "Lỗi kết nối: " + t.getMessage(),
+                        Toast.LENGTH_SHORT).show();
+                t.printStackTrace();
+            }
+        });
+
+
     }
 
     private void showConfirmationDialog() {
@@ -328,12 +270,11 @@ public class ScanLicensePlateActivity extends AppCompatActivity {
                 .setMessage("Bạn có xác nhận tra cứu biển số " + detectedLicensePlate + " này không?")
                 .setPositiveButton("Xác nhận", (dialog, which) -> {
                     // Xử lý khi người dùng xác nhận
-                    Toast.makeText(ScanLicensePlateActivity.this, "Đang tra cứu biển số: " + detectedLicensePlate, Toast.LENGTH_LONG).show();
                     // Thêm code xử lý tra cứu biển số ở đây
                     // Ví dụ: chuyển đến activity mới hoặc gửi request lên server
 
 
-//                    cleanedPlate = detectedLicensePlate.replace("-", "").replace(".", "").replace(" ", "");
+                    cleanedPlate = detectedLicensePlate.replace("-", "").replace(".", "").replace(" ", "");
 
 
                     Log.e("BienSoXe", cleanedPlate);
