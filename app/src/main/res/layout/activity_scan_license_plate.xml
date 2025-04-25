@@ -100,7 +100,7 @@
                     android:layout_marginEnd="8dp"
                     android:layout_weight="2"
                     android:backgroundTint="#1976D2"
-                    android:text="Quét biển số"
+                    android:text="Quét Biển Số"
                     android:textAllCaps="false"
                     android:textSize="16sp"
                     app:cornerRadius="12dp"
@@ -117,7 +117,7 @@
                     android:backgroundTint="#4CAF50"
                     android:gravity="center"
                     android:singleLine="true"
-                    android:text="Xác nhận"
+                    android:text="Tra Cứu"
                     android:textAllCaps="false"
                     android:textSize="16sp"
                     app:cornerRadius="12dp" />

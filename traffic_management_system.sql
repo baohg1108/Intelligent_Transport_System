@@ -1,8 +1,12 @@
--- Create database
+Create database
 CREATE DATABASE traffic_management_system;
 USE traffic_management_system;
 
--- Table: account
+INSERT INTO account (id,username,email ,password, role)
+VALUES ('nhtk412@', "nguyenhuutuankhang412@gmail.com",'Tuankhang412@', "USER");
+
+
+Table: account
 CREATE TABLE account (
     id VARCHAR(12) PRIMARY KEY COMMENT 'CCCD làm ID của tài khoản',
     username VARCHAR(255) NOT NULL UNIQUE,
@@ -13,7 +17,7 @@ CREATE TABLE account (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Table: login_history (theo dõi lịch sử đăng nhập)
+Table: login_history (theo dõi lịch sử đăng nhập)
 CREATE TABLE login_history (
     id INT AUTO_INCREMENT PRIMARY KEY,
     account_id VARCHAR(12) NOT NULL,
@@ -25,7 +29,7 @@ CREATE TABLE login_history (
     FOREIGN KEY (account_id) REFERENCES account(id)
 );
 
--- Table: person (Sử dụng CCCD làm ID)
+Table: person (Sử dụng CCCD làm ID)
 CREATE TABLE person (
     id VARCHAR(12) PRIMARY KEY COMMENT 'CCCD làm ID của người dân',
     full_name VARCHAR(100) NOT NULL,
@@ -35,7 +39,7 @@ CREATE TABLE person (
     phone_number VARCHAR(20)
 );
 
--- Table: car
+Table: car
 CREATE TABLE car (
     id INT AUTO_INCREMENT PRIMARY KEY,
     license_plate VARCHAR(20) NOT NULL UNIQUE,
@@ -45,7 +49,7 @@ CREATE TABLE car (
     FOREIGN KEY (owner_id) REFERENCES person(id)
 );
 
--- Table: motorcycle
+Table: motorcycle
 CREATE TABLE motorcycle (
     id INT AUTO_INCREMENT PRIMARY KEY,
     license_plate VARCHAR(20) NOT NULL UNIQUE,
@@ -55,7 +59,7 @@ CREATE TABLE motorcycle (
     FOREIGN KEY (owner_id) REFERENCES person(id)
 );
 
--- Table: face_data
+Table: face_data
 CREATE TABLE face_data (
     id INT AUTO_INCREMENT PRIMARY KEY,
     person_id VARCHAR(12) NOT NULL,
@@ -84,7 +88,7 @@ CREATE TABLE face_data (
     FOREIGN KEY (person_id) REFERENCES person(id)
 );
 
--- Table: car_violations (Bảng vi phạm dành riêng cho xe hơi)
+Table: car_violations (Bảng vi phạm dành riêng cho xe hơi)
 CREATE TABLE car_violations (
     id INT AUTO_INCREMENT PRIMARY KEY,
     violation_time DATETIME NOT NULL,
@@ -100,7 +104,7 @@ CREATE TABLE car_violations (
     FOREIGN KEY (car_id) REFERENCES car(id)
 );
 
--- Table: motorcycle_violations (Bảng vi phạm dành riêng cho xe máy)
+Table: motorcycle_violations (Bảng vi phạm dành riêng cho xe máy)
 CREATE TABLE motorcycle_violations (
     id INT AUTO_INCREMENT PRIMARY KEY,
     violation_time DATETIME NOT NULL,
@@ -116,7 +120,7 @@ CREATE TABLE motorcycle_violations (
     FOREIGN KEY (motorcycle_id) REFERENCES motorcycle(id)
 );
 
--- Table: car_scan_logs (Chi tiết quét dành riêng cho xe hơi)
+Table: car_scan_logs (Chi tiết quét dành riêng cho xe hơi)
 CREATE TABLE car_scan_logs (
     id INT AUTO_INCREMENT PRIMARY KEY,
     scan_timestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -127,7 +131,7 @@ CREATE TABLE car_scan_logs (
     FOREIGN KEY (car_id) REFERENCES car(id)
 );
 
--- Simplified Table: motorcycle_scan_logs
+Simplified Table: motorcycle_scan_logs
 CREATE TABLE motorcycle_scan_logs (
     id INT AUTO_INCREMENT PRIMARY KEY,
     scan_timestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -138,26 +142,41 @@ CREATE TABLE motorcycle_scan_logs (
     FOREIGN KEY (motorcycle_id) REFERENCES motorcycle(id)
 );
 
--- Thêm các chỉ mục (indexes) để tối ưu truy vấn
--- Indexes cho bảng car_violations
+Thêm các chỉ mục (indexes) để tối ưu truy vấn
+Indexes cho bảng car_violations
 CREATE INDEX idx_car_violations_car_id ON car_violations(car_id);
 CREATE INDEX idx_car_violations_violator ON car_violations(violator_id);
 CREATE INDEX idx_car_violations_time ON car_violations(violation_time);
 
--- Indexes cho bảng motorcycle_violations
+Indexes cho bảng motorcycle_violations
 CREATE INDEX idx_mc_violations_mc_id ON motorcycle_violations(motorcycle_id);
 CREATE INDEX idx_mc_violations_violator ON motorcycle_violations(violator_id);
 CREATE INDEX idx_mc_violations_time ON motorcycle_violations(violation_time);
 
--- Indexes cho bảng car_scan_logs
+Indexes cho bảng car_scan_logs
 CREATE INDEX idx_car_scan_time ON car_scan_logs(scan_timestamp);
 CREATE INDEX idx_car_scan_plate ON car_scan_logs(license_plate);
 
--- Indexes cho bảng motorcycle_scan_logs
+Indexes cho bảng motorcycle_scan_logs
 CREATE INDEX idx_mc_scan_time ON motorcycle_scan_logs(scan_timestamp);
 CREATE INDEX idx_mc_scan_plate ON motorcycle_scan_logs(license_plate);
 
--- Indexes cho các bảng quan hệ chính
+Indexes cho các bảng quan hệ chính
 CREATE INDEX idx_car_owner ON car(owner_id);
 CREATE INDEX idx_motorcycle_owner ON motorcycle(owner_id);
 CREATE INDEX idx_face_person ON face_data(person_id);
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+ALTER TABLE person
+ADD COLUMN path_face VARCHAR(255) COMMENT 'Đường dẫn ảnh khuôn mặt';
+
+ -- id VARCHAR(12) PRIMARY KEY COMMENT 'CCCD làm ID của người dân',
+--     full_name VARCHAR(100) NOT NULL,
+--     birth_date DATE,
+--     gender ENUM('MALE','FEMALE'),
+--     address VARCHAR(255),
+--     phone_number VARCHAR(20)
+ 
+INSERT INTO person
+VALUES
+('058205002155', 'Nguyen Huu Tuan Khang', '2005-12-04', 'MALE', 'Binh Duong', '0366408263', 'D:\\Programming_Language\\Python\\LearingFastAPI\\imgmatch_api\\Data\\058205002155.jpg');
