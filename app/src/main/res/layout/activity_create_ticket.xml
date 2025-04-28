@@ -271,7 +271,8 @@
                         android:drawablePadding="8dp"
                         android:padding="8dp"
                         android:text="Thêm Vi Phạm"
-                        android:textColor="#2145D2" />
+                        android:textColor="#F8FAFD"
+                        android:textColorLink="#EFEFEF" />
 
                     <!-- Tổng tiền phạt -->
                     <LinearLayout
@@ -294,8 +295,8 @@
                             android:id="@+id/tvTotalFine"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="4.500.000 VNĐ"
-                            android:textColor="#D32F2F"
+                            android:text="0 VNĐ"
+                            android:textColor="#1231DC"
                             android:textSize="16sp"
                             android:textStyle="bold" />
                     </LinearLayout>

@@ -109,6 +109,7 @@ public class FindLicensePlateActivity extends AppCompatActivity {
             Toast.makeText(this, "Vui lòng chọn loại phương tiện", Toast.LENGTH_SHORT).show();
             return;
         }
+
         ApiService apiService = ApiClient.getClient(FindLicensePlateActivity.this).create(ApiService.class);
         Call<Vehicles> vehiclesCall = null;
 

@@ -4,6 +4,7 @@ package com.example.doanmonhocltm;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -157,13 +158,17 @@ public class VehicleInfoActivity extends AppCompatActivity {
      */
     private void setupButtonListeners() {
         // Nút xem lịch sử vi phạm
+//        final int typeFinal = this.type;
+//        Log.e("LOI", "typeFinal: " + typeFinal);
         btnViewViolations.setOnClickListener(v -> {
             // Tạo Bundle chứa thông tin xe
             Bundle vehicleBundle = new Bundle();
             vehicleBundle.putString("licensePlate", tvPlate.getText().toString());
+            vehicleBundle.putInt("type", type);
+            Log.e("LOI", "type: " + type);
 
             // Tạo Intent chuyển đến màn hình lịch sử vi phạm
-            Intent intent = new Intent(VehicleInfoActivity.this, MainActivity.class);
+            Intent intent = new Intent(VehicleInfoActivity.this, ViolationHistoryActivity.class);
             intent.putExtra("vehicleData", vehicleBundle);
             startActivity(intent);
         });

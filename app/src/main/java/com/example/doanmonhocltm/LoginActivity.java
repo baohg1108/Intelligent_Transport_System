@@ -85,6 +85,8 @@ public class LoginActivity extends AppCompatActivity {
     private void handleLoginButtonClick() {
         String username = edtUsername.getText().toString();
         String password = edtPassword.getText().toString();
+        Log.e("username", username);
+        Log.e("password", password);
 
         if (!validateLoginInput(username, password)) {
             return;

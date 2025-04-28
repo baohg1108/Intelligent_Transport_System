@@ -13,6 +13,10 @@ import com.example.doanmonhocltm.model.ResultLogin;
 import com.example.doanmonhocltm.model.ScanLog;
 import com.example.doanmonhocltm.model.User;
 import com.example.doanmonhocltm.model.Vehicles;
+import com.example.doanmonhocltm.model.ViolationAll;
+
+
+import java.util.List;
 
 import okhttp3.ResponseBody;
 import okhttp3.MultipartBody;
@@ -77,5 +81,16 @@ public interface ApiService {
 
     @GET("/quet/api/account/{id}")
     Call<User> getUserMail(@Path("id") String id);
+
+    @GET("quet/api/car-violations/license-plate/{licensePlate}")
+    Call<List<ViolationAll>> getCarViolationsByLicensePlate(@Path("licensePlate") String licensePlate);
+
+    @GET("quet/api/motorcycle-violations/license-plate/{licensePlate}")
+    Call<List<ViolationAll>> getMotorcycleViolationsByLicensePlate(@Path("licensePlate") String licensePlate);
+
+    @GET("quet/api/car-violations/{id}")
+    Call<ViolationAll> getCarViolationById(@Path("id") int id);
+    @GET("quet/api/motorcycle-violations/{id}")
+    Call<ViolationAll> getMotorcycleViolationById(@Path("id") int id);
 }
 

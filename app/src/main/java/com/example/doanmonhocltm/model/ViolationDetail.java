@@ -1,14 +1,30 @@
 package com.example.doanmonhocltm.model;
 
-public class CarViolationDetail {
-
+public class ViolationDetail {
+    private int id;
+    private int violationId;
     private String violationType;
     private float fineAmount;
 
-    public CarViolationDetail(String violationType, float fineAmount) {
 
-        this.violationType = violationType;
-        this.fineAmount = fineAmount;
+    public ViolationDetail() {
+    }
+
+    // Getters and Setters
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getViolationId() {
+        return violationId;
+    }
+
+    public void setViolationId(int violationId) {
+        this.violationId = violationId;
     }
 
     public String getViolationType() {
