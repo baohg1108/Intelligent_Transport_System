@@ -1,7 +1,6 @@
 package com.example.doanmonhocltm;
 
 import android.annotation.SuppressLint;
-import android.app.Person;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -22,7 +21,7 @@ import com.example.doanmonhocltm.callapi.ApiService;
 import com.example.doanmonhocltm.callapi.SessionManager;
 import com.example.doanmonhocltm.model.LoginHistory;
 import com.example.doanmonhocltm.model.LoginRequest;
-import com.example.doanmonhocltm.model.ResultFaceRecognition;
+import com.example.doanmonhocltm.model.Person;
 import com.example.doanmonhocltm.model.ResultLogin;
 import com.example.doanmonhocltm.model.User;
 import com.example.doanmonhocltm.util.DeviceUtil;
@@ -135,11 +134,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void fetchUserDetails(String userId, String token, String username) {
-        Call<ResultFaceRecognition> resultFaceRecognition = apiService.getPersonById(userId);
+        Call<Person> resultFaceRecognition = apiService.getPersonById(userId);
 
-        resultFaceRecognition.enqueue(new Callback<ResultFaceRecognition>() {
+        resultFaceRecognition.enqueue(new Callback<Person>() {
             @Override
-            public void onResponse(Call<ResultFaceRecognition> call, Response<ResultFaceRecognition> response) {
+            public void onResponse(Call<Person> call, Response<Person> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     String fullName = response.body().getFullName();
                     fetchUserEmail(userId, token, username, fullName);
@@ -150,7 +149,7 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ResultFaceRecognition> call, Throwable t) {
+            public void onFailure(Call<Person> call, Throwable t) {
                 handleServerError();
             }
         });
@@ -179,11 +178,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void fetchFacePath(String userId, String token, String username, String fullName, String email) {
-        Call<ResultFaceRecognition> facePathCall = apiService.getPersonById(userId);
-        facePathCall.enqueue(new Callback<ResultFaceRecognition>() {
+        Call<Person> facePathCall = apiService.getPersonById(userId);
+        facePathCall.enqueue(new Callback<Person>() {
 
             @Override
-            public void onResponse(Call<ResultFaceRecognition> call, Response<ResultFaceRecognition> response) {
+            public void onResponse(Call<Person> call, Response<Person> response) {
                 if (response.isSuccessful()) {
                     String facePath = response.body().getFacePath();
                     fetchUserImage(userId, token, username, fullName, email, facePath);
@@ -194,7 +193,7 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ResultFaceRecognition> call, Throwable t) {
+            public void onFailure(Call<Person> call, Throwable t) {
                 handleServerError();
             }
         });

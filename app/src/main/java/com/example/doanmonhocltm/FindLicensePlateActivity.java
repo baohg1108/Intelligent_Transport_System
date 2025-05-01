@@ -2,7 +2,6 @@
 package com.example.doanmonhocltm;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -27,9 +26,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.doanmonhocltm.callapi.ApiClient;
 import com.example.doanmonhocltm.callapi.ApiService;
 import com.example.doanmonhocltm.callapi.SessionManager;
-import com.example.doanmonhocltm.model.Car;
-import com.example.doanmonhocltm.model.Motorcycle;
-import com.example.doanmonhocltm.model.ResultFaceRecognition;
+import com.example.doanmonhocltm.model.Person;
 import com.example.doanmonhocltm.model.ScanLog;
 import com.example.doanmonhocltm.model.Vehicles;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -125,13 +122,13 @@ public class FindLicensePlateActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     Vehicles vehicles = response.body();
 
-                    Call<ResultFaceRecognition> resultFaceRecognitionCall = apiService.getPersonById(vehicles.getOwnerId());
+                    Call<Person> resultFaceRecognitionCall = apiService.getPersonById(vehicles.getOwnerId());
 
-                    resultFaceRecognitionCall.enqueue(new Callback<ResultFaceRecognition>() {
+                    resultFaceRecognitionCall.enqueue(new Callback<Person>() {
                         @Override
-                        public void onResponse(Call<ResultFaceRecognition> call, Response<ResultFaceRecognition> response) {
+                        public void onResponse(Call<Person> call, Response<Person> response) {
                             if (response.isSuccessful()) {
-                                ResultFaceRecognition resultFaceRecognition = response.body();
+                                Person person = response.body();
                                 // Chuyển sang màn hình VehicleInfoActivity
                                 Intent intent = new Intent(FindLicensePlateActivity.this, VehicleInfoActivity.class);
                                 Bundle bundle = new Bundle();
@@ -139,7 +136,7 @@ public class FindLicensePlateActivity extends AppCompatActivity {
                                 bundle.putString("licensePlate", vehicles.getLicensePlate());
                                 bundle.putString("brand", vehicles.getBrand());
                                 bundle.putString("color", vehicles.getColor());
-                                bundle.putString("owner", resultFaceRecognition.getFullName());
+                                bundle.putString("owner", person.getFullName());
                                 intent.putExtra("Infor", bundle);
 
 
@@ -178,7 +175,7 @@ public class FindLicensePlateActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailure(Call<ResultFaceRecognition> call, Throwable t) {
+                        public void onFailure(Call<Person> call, Throwable t) {
                             Toast.makeText(FindLicensePlateActivity.this,
                                     "Lỗi kết nối: " + t.getMessage(),
                                     Toast.LENGTH_SHORT).show();

@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import com.example.doanmonhocltm.util.DateDeserializer;
 import com.google.gson.annotations.JsonAdapter;
 
-public class ResultFaceRecognition {
+public class Person {
     private String id;
     private String fullName;
     @JsonAdapter(DateDeserializer.class)
@@ -31,7 +31,7 @@ public class ResultFaceRecognition {
     }
 
 
-    public ResultFaceRecognition(String id, String fullName, Long birthDate, String gender, String address, String phoneNumber, String facePath) {
+    public Person(String id, String fullName, Long birthDate, String gender, String address, String phoneNumber, String facePath) {
         this.id = id;
         this.fullName = fullName;
         this.birthDate = birthDate;

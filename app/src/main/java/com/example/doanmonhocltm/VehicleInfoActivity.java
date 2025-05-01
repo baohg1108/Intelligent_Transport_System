@@ -23,7 +23,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.doanmonhocltm.callapi.ApiClient;
 import com.example.doanmonhocltm.callapi.ApiService;
 import com.example.doanmonhocltm.callapi.SessionManager;
-import com.example.doanmonhocltm.model.ResultFaceRecognition;
+import com.example.doanmonhocltm.model.Person;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -205,14 +205,14 @@ public class VehicleInfoActivity extends AppCompatActivity {
 
             // Call api CCCD
             ApiService apiService = ApiClient.getClient(VehicleInfoActivity.this).create(ApiService.class);
-            Call<ResultFaceRecognition> resultFaceRecognitionCall = apiService.getPersonById(cccd);
+            Call<Person> resultFaceRecognitionCall = apiService.getPersonById(cccd);
 
-            resultFaceRecognitionCall.enqueue(new Callback<ResultFaceRecognition>() {
+            resultFaceRecognitionCall.enqueue(new Callback<Person>() {
                 @Override
-                public void onResponse(Call<ResultFaceRecognition> call, Response<ResultFaceRecognition> response) {
+                public void onResponse(Call<Person> call, Response<Person> response) {
                     if (response.isSuccessful()) {
-                        ResultFaceRecognition resultFaceRecognition = response.body();
-                        if (resultFaceRecognition != null) {
+                        Person person = response.body();
+                        if (person != null) {
                             // Hiển thị thông báo xác thực thành công
                             Toast.makeText(VehicleInfoActivity.this, "Xác thực thành công", Toast.LENGTH_SHORT).show();
 
@@ -224,8 +224,8 @@ public class VehicleInfoActivity extends AppCompatActivity {
 //                            ticketData.putString("brand", tvBrand.getText().toString());
 //                            ticketData.putString("color", tvColor.getText().toString());
 //                            ticketData.putString("ownerName", tvOwner.getText().toString());
-                            ticketData.putString("driverCCCD", resultFaceRecognition.getId());
-                            ticketData.putString("driverName", resultFaceRecognition.getFullName());
+                            ticketData.putString("driverCCCD", person.getId());
+                            ticketData.putString("driverName", person.getFullName());
 
                             // Chuyển sang màn hình tạo biên bản
                             Intent intent = new Intent(VehicleInfoActivity.this, CreateTicketActivity.class);
@@ -242,7 +242,7 @@ public class VehicleInfoActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Call<ResultFaceRecognition> call, Throwable t) {
+                public void onFailure(Call<Person> call, Throwable t) {
                     Toast.makeText(VehicleInfoActivity.this, "Lỗi kết nối. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
                     t.printStackTrace();
                 }

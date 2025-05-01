@@ -8,7 +8,7 @@ import com.example.doanmonhocltm.model.LoginRequest;
 import com.example.doanmonhocltm.model.Logout;
 import com.example.doanmonhocltm.model.Motorcycle;
 import com.example.doanmonhocltm.model.MotorcycleViolationReport;
-import com.example.doanmonhocltm.model.ResultFaceRecognition;
+import com.example.doanmonhocltm.model.Person;
 import com.example.doanmonhocltm.model.ResultLogin;
 import com.example.doanmonhocltm.model.ScanLog;
 import com.example.doanmonhocltm.model.User;
@@ -53,10 +53,10 @@ public interface ApiService {
 
     @Multipart
     @POST("quet/api/face-recognition/identify")
-    Call<ResultFaceRecognition> identifyFace(@Part MultipartBody.Part image);
+    Call<Person> identifyFace(@Part MultipartBody.Part image);
 
     @GET("/quet/api/person/{id}")
-    Call<ResultFaceRecognition> getPersonById(@Path("id") String id);
+    Call<Person> getPersonById(@Path("id") String id);
 
     @POST("/quet/api/car-violations")
     Call<CarViolationReport> createCarViolationReport(@Body CarViolationReport carViolationReport);

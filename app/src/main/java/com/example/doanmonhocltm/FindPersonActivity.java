@@ -18,7 +18,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.doanmonhocltm.callapi.ApiClient;
 import com.example.doanmonhocltm.callapi.ApiService;
 import com.example.doanmonhocltm.callapi.SessionManager;
-import com.example.doanmonhocltm.model.ResultFaceRecognition;
+import com.example.doanmonhocltm.model.Person;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -126,13 +126,13 @@ public class FindPersonActivity extends AppCompatActivity {
 
                     ApiService apiService = ApiClient.getClient(FindPersonActivity.this).create(ApiService.class);
 
-                    Call<ResultFaceRecognition> resultFaceRecognitionCall = apiService.getPersonById(editTextCitizenId.getText().toString());
-                    resultFaceRecognitionCall.enqueue(new Callback<ResultFaceRecognition>() {
+                    Call<Person> resultFaceRecognitionCall = apiService.getPersonById(editTextCitizenId.getText().toString());
+                    resultFaceRecognitionCall.enqueue(new Callback<Person>() {
 
                         @Override
-                        public void onResponse(Call<ResultFaceRecognition> call, Response<ResultFaceRecognition> response) {
+                        public void onResponse(Call<Person> call, Response<Person> response) {
                             if (response.isSuccessful()) {
-                                ResultFaceRecognition result = response.body();
+                                Person result = response.body();
 
                                 Bundle bundle = new Bundle();
                                 bundle.putString("id", result.getId());
@@ -157,7 +157,7 @@ public class FindPersonActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailure(Call<ResultFaceRecognition> call, Throwable t) {
+                        public void onFailure(Call<Person> call, Throwable t) {
                             Toast.makeText(FindPersonActivity.this,
                                     "Server Đang Bị Lỗi",
                                     Toast.LENGTH_SHORT).show();

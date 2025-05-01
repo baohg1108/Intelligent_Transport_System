@@ -5,7 +5,6 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -30,7 +29,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.doanmonhocltm.callapi.ApiClient;
 import com.example.doanmonhocltm.callapi.ApiService;
 import com.example.doanmonhocltm.callapi.SessionManager;
-import com.example.doanmonhocltm.model.ResultFaceRecognition;
+import com.example.doanmonhocltm.model.Person;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -95,7 +94,7 @@ public class ScanPersonActivity extends AppCompatActivity {
             type = ticketData.getInt("type");
             licensePlate = ticketData.getString("licensePlate");
 
-            Toast.makeText(ScanPersonActivity.this, "type: " + type + " - LicensePale " + licensePlate, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(ScanPersonActivity.this, "type: " + type + " - LicensePale " + licensePlate, Toast.LENGTH_SHORT).show();
 
         }
 
@@ -304,17 +303,17 @@ public class ScanPersonActivity extends AppCompatActivity {
             Toast.makeText(this, "Đang xử lý nhận diện khuôn mặt...", Toast.LENGTH_LONG).show();
 
             // Gọi API
-            Call<ResultFaceRecognition> call = apiService.identifyFace(filePart);
+            Call<Person> call = apiService.identifyFace(filePart);
 
             // Thực hiện gọi API bất đồng bộ
-            call.enqueue(new Callback<ResultFaceRecognition>() {
+            call.enqueue(new Callback<Person>() {
                 @Override
-                public void onResponse(Call<ResultFaceRecognition> call, Response<ResultFaceRecognition> response) {
+                public void onResponse(Call<Person> call, Response<Person> response) {
                     // Kích hoạt lại nút xác nhận
                     btnConfirmFace.setEnabled(true);
 
                     if (response.isSuccessful() && response.body() != null) {
-                        ResultFaceRecognition result = response.body();
+                        Person result = response.body();
                         Log.d(TAG, "Kết quả nhận diện: " + result.toString());
 
                         // Xử lý kết quả trả về từ API ở đây
@@ -344,7 +343,7 @@ public class ScanPersonActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Call<ResultFaceRecognition> call, Throwable t) {
+                public void onFailure(Call<Person> call, Throwable t) {
                     // Kích hoạt lại nút xác nhận
                     btnConfirmFace.setEnabled(true);
 
@@ -440,7 +439,7 @@ public class ScanPersonActivity extends AppCompatActivity {
         }
     }
 
-    private void handleFaceRecognitionResult(ResultFaceRecognition result) {
+    private void handleFaceRecognitionResult(Person result) {
         // Xử lý kết quả nhận diện khuôn mặt
         Toast.makeText(this, "Nhận diện thành công: " + result.getFullName(), Toast.LENGTH_SHORT).show();
 

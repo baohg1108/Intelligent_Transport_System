@@ -20,9 +20,8 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.doanmonhocltm.callapi.ApiClient;
 import com.example.doanmonhocltm.callapi.ApiService;
 import com.example.doanmonhocltm.callapi.SessionManager;
-import com.example.doanmonhocltm.model.Car;
 import com.example.doanmonhocltm.model.Logout;
-import com.example.doanmonhocltm.model.ResultFaceRecognition;
+import com.example.doanmonhocltm.model.Person;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 
@@ -79,13 +78,13 @@ public class UserInfoActivity extends AppCompatActivity {
         String userId = sessionManager.getUserId();
 
         ApiService apiService = ApiClient.getClient(UserInfoActivity.this).create(ApiService.class);
-        Call<ResultFaceRecognition> call = apiService.getPersonById(userId);
+        Call<Person> call = apiService.getPersonById(userId);
 
-        call.enqueue(new Callback<ResultFaceRecognition>() {
+        call.enqueue(new Callback<Person>() {
 
             @Override
-            public void onResponse(Call<ResultFaceRecognition> call, Response<ResultFaceRecognition> response) {
-                ResultFaceRecognition result = response.body();
+            public void onResponse(Call<Person> call, Response<Person> response) {
+                Person result = response.body();
                 if (result != null) {
                     tvCitizenId.setText(result.getId());
                     tvPhone.setText(result.getPhoneNumber());
@@ -107,7 +106,7 @@ public class UserInfoActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ResultFaceRecognition> call, Throwable t) {
+            public void onFailure(Call<Person> call, Throwable t) {
                 t.printStackTrace();
             }
         });
