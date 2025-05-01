@@ -12,9 +12,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.graphics.Insets;
 
 import com.example.doanmonhocltm.callapi.ApiClient;
 import com.example.doanmonhocltm.callapi.ApiService;
@@ -56,6 +60,12 @@ public class ViolationDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_violation_detail);
+        EdgeToEdge.enable(this);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
         // Get violation ID from intent
         Intent intent = getIntent();
@@ -156,12 +166,9 @@ public class ViolationDetailActivity extends AppCompatActivity {
     private void fetchViolationDetails() {
         ApiService apiService = ApiClient.getClient(this).create(ApiService.class);
         Call<ViolationAll> call;
-        if (type == 1)
-        {
+        if (type == 1) {
             call = apiService.getCarViolationById(violationId);
-        }
-        else
-        {
+        } else {
             call = apiService.getMotorcycleViolationById(violationId);
         }
 
@@ -227,8 +234,6 @@ public class ViolationDetailActivity extends AppCompatActivity {
 
         tvCarBrand.setText(capitalize(violation.getCarBrand()));
         tvCarColor.setText(capitalize(violation.getCarColor()));
-
-
 
 
         // Set officer info
