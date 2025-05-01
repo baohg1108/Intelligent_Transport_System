@@ -49,7 +49,6 @@ public class VehicleInfoActivity extends AppCompatActivity {
     private CircleImageView userAvatar;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -237,6 +236,8 @@ public class VehicleInfoActivity extends AppCompatActivity {
                             // Ẩn container xác thực
                             idVerificationContainer.setVisibility(View.GONE);
                         }
+                    } else {
+                        Toast.makeText(VehicleInfoActivity.this, "Không Tìm Thấy Thông Tin Người Này", Toast.LENGTH_SHORT).show();
                     }
                 }
 

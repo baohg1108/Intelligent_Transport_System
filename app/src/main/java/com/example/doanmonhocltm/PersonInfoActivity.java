@@ -62,9 +62,6 @@ public class PersonInfoActivity extends AppCompatActivity {
         initializeViews();
 
 
-
-
-
         // Đặt dữ liệu cho các thành phần giao diện
         Intent intent = getIntent();
         Bundle bundle = intent.getBundleExtra("result");
@@ -84,7 +81,11 @@ public class PersonInfoActivity extends AppCompatActivity {
             tvPersonId.setText(personId);
             tvFullName.setText(fullName);
             tvBirthDate.setText(formattedDate);
-            tvGender.setText(gender);
+            if (gender.equals("MALE")) {
+                tvGender.setText("Nam");
+            } else {
+                tvGender.setText("Nữ");
+            }
             tvAddress.setText(address);
             tvPhoneNumber.setText(phoneNumber);
 
@@ -92,7 +93,7 @@ public class PersonInfoActivity extends AppCompatActivity {
 
             ApiService apiService = ApiClient.getClient(PersonInfoActivity.this).create(ApiService.class);
 
-            Call<ResponseBody>  imageCall = apiService.getImage(bundle.getString("facePath"));
+            Call<ResponseBody> imageCall = apiService.getImage(bundle.getString("facePath"));
 
             imageCall.enqueue(new Callback<ResponseBody>() {
                 @Override
@@ -116,8 +117,6 @@ public class PersonInfoActivity extends AppCompatActivity {
                     Log.e("API", "Request failed: " + t.getMessage());
                 }
             });
-
-
 
 
             //_________________________________________________________________________________________

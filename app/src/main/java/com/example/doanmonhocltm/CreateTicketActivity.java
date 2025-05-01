@@ -12,7 +12,6 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -33,6 +32,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 // Các class liên quan đến gọi API
+import com.example.doanmonhocltm.adapter.ViolationAdapter;
 import com.example.doanmonhocltm.callapi.ApiClient;
 import com.example.doanmonhocltm.callapi.ApiService;
 import com.example.doanmonhocltm.callapi.SessionManager;

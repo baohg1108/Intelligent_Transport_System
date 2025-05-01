@@ -41,7 +41,6 @@ public class FindPersonActivity extends AppCompatActivity {
     private CircleImageView userAvatar;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -132,42 +131,44 @@ public class FindPersonActivity extends AppCompatActivity {
 
                         @Override
                         public void onResponse(Call<ResultFaceRecognition> call, Response<ResultFaceRecognition> response) {
+                            if (response.isSuccessful()) {
+                                ResultFaceRecognition result = response.body();
 
-                            ResultFaceRecognition result = response.body();
-
-                            Bundle bundle = new Bundle();
-                            bundle.putString("id", result.getId());
-                            bundle.putString("fullName", result.getFullName());
-                            bundle.putLong("birthDate", result.getBirthDate());
-                            bundle.putString("gender", result.getGender());
-                            bundle.putString("address", result.getAddress());
-                            bundle.putString("phoneNumber", result.getPhoneNumber());
-                            bundle.putString("facePath", result.getFacePath());
+                                Bundle bundle = new Bundle();
+                                bundle.putString("id", result.getId());
+                                bundle.putString("fullName", result.getFullName());
+                                bundle.putLong("birthDate", result.getBirthDate());
+                                bundle.putString("gender", result.getGender());
+                                bundle.putString("address", result.getAddress());
+                                bundle.putString("phoneNumber", result.getPhoneNumber());
+                                bundle.putString("facePath", result.getFacePath());
 
 
-                            Intent intent = new Intent(FindPersonActivity.this, PersonInfoActivity.class);
+                                Intent intent = new Intent(FindPersonActivity.this, PersonInfoActivity.class);
 
-                            intent.putExtra("result", bundle);
+                                intent.putExtra("result", bundle);
 
-                            startActivity(intent);
+                                startActivity(intent);
+                            } else {
+                                Toast.makeText(FindPersonActivity.this, "Không Tìm Thấy Thông Tin Người Này", Toast.LENGTH_SHORT).show();
+
+                            }
+
                         }
 
                         @Override
                         public void onFailure(Call<ResultFaceRecognition> call, Throwable t) {
                             Toast.makeText(FindPersonActivity.this,
-                                    "Lỗi: "  ,
+                                    "Server Đang Bị Lỗi",
                                     Toast.LENGTH_SHORT).show();
                         }
                     });
 
-                }
-                else
-                {
+                } else {
                     Toast.makeText(FindPersonActivity.this,
-                            "Vui Lòng Nhập Số CCCD "  ,
+                            "Vui Lòng Nhập Số CCCD ",
                             Toast.LENGTH_SHORT).show();
                 }
-
 
 
             }

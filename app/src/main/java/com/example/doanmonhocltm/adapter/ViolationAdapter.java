@@ -1,4 +1,4 @@
-package com.example.doanmonhocltm;
+package com.example.doanmonhocltm.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.doanmonhocltm.R;
 import com.example.doanmonhocltm.model.Violation;
 
 import java.util.List;

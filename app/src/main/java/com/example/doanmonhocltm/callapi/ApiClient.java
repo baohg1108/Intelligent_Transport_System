@@ -11,8 +11,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class ApiClient {
-    private static String BASE_URL = "http://10.0.2.2:8087/"; // Dành cho giả lập Android
-//    private static String BASE_URL = "http://192.168.1.8:8087/"; // Dành IP SERVER
+    //    private static String BASE_URL = "http://10.0.2.2:8087/"; // Dành cho giả lập Android
+    private static String BASE_URL = "http://192.168.1.6:8087/"; // Dành IP SERVER
 
     private static Retrofit retrofit;
 
@@ -28,9 +28,9 @@ public class ApiClient {
 
             // Cấu hình OkHttpClient với interceptor
             OkHttpClient client = new OkHttpClient.Builder().addInterceptor(loggingInterceptor)  // Thêm interceptor vào client
-                    .addInterceptor(new AuthInterceptor(sessionManager)).connectTimeout(30, TimeUnit.MINUTES)  // Chờ kết nối tới 30 phút
-                    .readTimeout(3, TimeUnit.MINUTES)     // Chờ đọc dữ liệu tới  phút
-                    .writeTimeout(3, TimeUnit.MINUTES)    // Chờ ghi dữ liệu tới 30 phút// Interceptor của bạn
+                    .addInterceptor(new AuthInterceptor(sessionManager)).connectTimeout(30, TimeUnit.MINUTES)  // Chờ kết nối tới 3 phút
+                    .readTimeout(3, TimeUnit.MINUTES)     // Chờ đọc dữ liệu tới 3 phút
+                    .writeTimeout(3, TimeUnit.MINUTES)    // Chờ ghi dữ liệu tới 3 phút// Interceptor của bạn
                     .build();
 
             // Tạo Retrofit instance

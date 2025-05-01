@@ -1,0 +1,21 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+
+    <!-- Shield background -->
+    <path
+        android:fillColor="#1565C0"
+        android:pathData="M100,10 C140,20 180,50 180,90 C180,140 120,190 100,200 C80,190 20,140 20,90 C20,50 60,20 100,10 Z" />
+
+    <!-- Clipboard -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M60,50 h80 a5,5 0 0 1 5,5 v90 a5,5 0 0 1 -5,5 h-80 a5,5 0 0 1 -5,-5 v-90 a5,5 0 0 1 5,-5 Z" />
+
+    <!-- Car icon -->
+    <path
+        android:fillColor="#1565C0"
+        android:pathData="M75,90 h50 l10,20 h-70 Z M80,110 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0 M110,110 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0" />
+</vector>

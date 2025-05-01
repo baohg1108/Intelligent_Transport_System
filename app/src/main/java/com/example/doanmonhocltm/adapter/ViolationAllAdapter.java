@@ -1,4 +1,4 @@
-package com.example.doanmonhocltm;
+package com.example.doanmonhocltm.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
