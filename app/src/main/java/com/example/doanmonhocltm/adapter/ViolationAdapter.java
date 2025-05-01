@@ -10,12 +10,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.doanmonhocltm.R;
-import com.example.doanmonhocltm.model.Violation;
+import com.example.doanmonhocltm.model.ViolationItem;
 
 import java.util.List;
 
 public class ViolationAdapter extends RecyclerView.Adapter<ViolationAdapter.ViolationViewHolder> {
-    private List<Violation> violations;
+    private List<ViolationItem> violationItems;
     private OnViolationDeleteListener deleteListener;
 
     // Interface for delete callback
@@ -23,8 +23,8 @@ public class ViolationAdapter extends RecyclerView.Adapter<ViolationAdapter.Viol
         void onViolationDelete(int position);
     }
 
-    public ViolationAdapter(List<Violation> violations) {
-        this.violations = violations;
+    public ViolationAdapter(List<ViolationItem> violationItems) {
+        this.violationItems = violationItems;
     }
 
     public void setOnViolationDeleteListener(OnViolationDeleteListener listener) {
@@ -41,9 +41,9 @@ public class ViolationAdapter extends RecyclerView.Adapter<ViolationAdapter.Viol
 
     @Override
     public void onBindViewHolder(@NonNull ViolationViewHolder holder, int position) {
-        Violation violation = violations.get(position);
-        holder.tvName.setText(violation.getName());
-        holder.tvFine.setText(String.format("%,d VNĐ", violation.getFineAmount()));
+        ViolationItem violationItem = violationItems.get(position);
+        holder.tvName.setText(violationItem.getName());
+        holder.tvFine.setText(String.format("%,d VNĐ", violationItem.getFineAmount()));
 
         // Set delete button click listener
         holder.btnDelete.setOnClickListener(v -> {
@@ -55,7 +55,7 @@ public class ViolationAdapter extends RecyclerView.Adapter<ViolationAdapter.Viol
 
     @Override
     public int getItemCount() {
-        return violations.size();
+        return violationItems.size();
     }
 
     public static class ViolationViewHolder extends RecyclerView.ViewHolder {

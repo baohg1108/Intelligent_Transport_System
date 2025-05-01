@@ -1,12 +1,12 @@
 package com.example.doanmonhocltm.model;
 
-public class Violation {
+public class ViolationItem {
     private String name;
     private int fineAmount;
 
     private String punishmentType;
 
-    public Violation(String name, int fineAmount) {
+    public ViolationItem(String name, int fineAmount) {
         this.name = name;
         this.fineAmount = fineAmount;
     }

@@ -42,7 +42,7 @@ import com.example.doanmonhocltm.model.CarViolationDetail;
 import com.example.doanmonhocltm.model.CarViolationReport;
 import com.example.doanmonhocltm.model.MotorcycleViolationDetail;
 import com.example.doanmonhocltm.model.MotorcycleViolationReport;
-import com.example.doanmonhocltm.model.Violation;
+import com.example.doanmonhocltm.model.ViolationItem;
 
 // Thư viện dịch vụ vị trí từ Google
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -102,7 +102,7 @@ public class CreateTicketActivity extends AppCompatActivity implements Violation
     };
 
     // Danh sách vi phạm đã chọn
-    private ArrayList<Violation> selectedViolations = new ArrayList<>();
+    private ArrayList<ViolationItem> selectedViolationItems = new ArrayList<>();
     private ViolationAdapter violationAdapter;
 
     // Đối tượng dùng để lấy vị trí hiện tại
@@ -149,7 +149,7 @@ public class CreateTicketActivity extends AppCompatActivity implements Violation
 
         // Cấu hình RecyclerView hiển thị danh sách vi phạm
         rvSelectedViolations.setLayoutManager(new LinearLayoutManager(this));
-        violationAdapter = new ViolationAdapter(selectedViolations);
+        violationAdapter = new ViolationAdapter(selectedViolationItems);
         violationAdapter.setOnViolationDeleteListener(this);
         rvSelectedViolations.setAdapter(violationAdapter);
 
@@ -202,9 +202,9 @@ public class CreateTicketActivity extends AppCompatActivity implements Violation
 
             // Nếu chọn hợp lệ, thêm vào danh sách
             if (index >= 0) {
-                Violation violation = new Violation(violationNames[index], violationFines[index]);
-                selectedViolations.add(violation);
-                violationAdapter.notifyItemInserted(selectedViolations.size() - 1);
+                ViolationItem violationItem = new ViolationItem(violationNames[index], violationFines[index]);
+                selectedViolationItems.add(violationItem);
+                violationAdapter.notifyItemInserted(selectedViolationItems.size() - 1);
                 updateTotalFine(); // Cập nhật tổng tiền phạt
             } else {
                 Toast.makeText(this, "Hãy chọn hành vi vi phạm hợp lệ!", Toast.LENGTH_SHORT).show();
@@ -230,7 +230,7 @@ public class CreateTicketActivity extends AppCompatActivity implements Violation
         // Nút hoàn tất tạo biên bản
         btnFinalizeTicket.setOnClickListener(v -> {
             // Kiểm tra có vi phạm nào chưa
-            if (selectedViolations.isEmpty()) {
+            if (selectedViolationItems.isEmpty()) {
                 Toast.makeText(this, "Vui lòng thêm ít nhất một vi phạm", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -266,7 +266,7 @@ public class CreateTicketActivity extends AppCompatActivity implements Violation
             if (type == 1) {
                 // Chuyển danh sách vi phạm sang dạng đối tượng chi tiết
                 List<CarViolationDetail> violationDetails = new ArrayList<>();
-                for (Violation item : selectedViolations) {
+                for (ViolationItem item : selectedViolationItems) {
                     violationDetails.add(new CarViolationDetail(item.getName(), item.getFineAmount()));
                 }
 
@@ -304,7 +304,7 @@ public class CreateTicketActivity extends AppCompatActivity implements Violation
                 // Tạo đối tượng report gửi lên server
                 // Chuyển danh sách vi phạm sang dạng đối tượng chi tiết
                 List<MotorcycleViolationDetail> violationDetails = new ArrayList<>();
-                for (Violation item : selectedViolations) {
+                for (ViolationItem item : selectedViolationItems) {
                     violationDetails.add(new MotorcycleViolationDetail(item.getName(), item.getFineAmount()));
                 }
 
@@ -380,7 +380,7 @@ public class CreateTicketActivity extends AppCompatActivity implements Violation
     // Cập nhật tổng tiền phạt hiển thị lên giao diện
     private void updateTotalFine() {
         int total = 0;
-        for (Violation v : selectedViolations) total += v.getFineAmount();
+        for (ViolationItem v : selectedViolationItems) total += v.getFineAmount();
         tvTotalFine.setText(NumberFormat.getNumberInstance(Locale.US).format(total) + " VNĐ");
     }
 
@@ -407,8 +407,8 @@ public class CreateTicketActivity extends AppCompatActivity implements Violation
     // Gọi khi người dùng xóa 1 vi phạm trong danh sách
     @Override
     public void onViolationDelete(int position) {
-        if (position >= 0 && position < selectedViolations.size()) {
-            selectedViolations.remove(position);
+        if (position >= 0 && position < selectedViolationItems.size()) {
+            selectedViolationItems.remove(position);
             violationAdapter.notifyItemRemoved(position);
             updateTotalFine(); // Cập nhật tổng phạt mới
             Toast.makeText(this, "Đã xóa vi phạm", Toast.LENGTH_SHORT).show();
