@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -55,31 +56,23 @@ import retrofit2.Response;
 
 public class ScanPersonActivity extends AppCompatActivity {
     private static final String TAG = "ScanPersonActivity";
+    private static final int REQUEST_CODE_PERMISSIONS = 10;
+    private static final String[] REQUIRED_PERMISSIONS = new String[]{Manifest.permission.CAMERA};
+    private static final int TIMEOUT_SECONDS = 60;
+    private static final int MAX_IMAGE_SIZE = 500 * 1024;
+    private static final int JPEG_QUALITY = 80;
 
     private int type;
     private String licensePlate;
-    private static final int REQUEST_CODE_PERMISSIONS = 10;
-    private static final String[] REQUIRED_PERMISSIONS = new String[]{Manifest.permission.CAMERA};
-
+    private CameraSelector cameraSelector;
+    private int currentCameraSelector = CameraSelector.LENS_FACING_FRONT; // Default to front camera
     private PreviewView previewView;
+    private ImageButton btnSwitchCamera;
     private MaterialButton btnCaptureFace;
-    private MaterialButton btnConfirmFace;
     private FloatingActionButton btnBack;
-
     private ImageCapture imageCapture;
     private final Executor executor = Executors.newSingleThreadExecutor();
     private Uri savedImageUri;
-
-    // Thời gian chờ API - tăng lên để tránh timeout
-    private static final int TIMEOUT_SECONDS = 60;
-
-    // Kích thước tối đa cho ảnh (500KB)
-    private static final int MAX_IMAGE_SIZE = 500 * 1024;
-
-    // Quality for JPEG compression (0-100)
-    private static final int JPEG_QUALITY = 80;
-
-    // SessionManager để xử lý JWT
     private SessionManager sessionManager;
 
     @Override
@@ -88,40 +81,44 @@ public class ScanPersonActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_scan_person);
 
-        Intent intent = getIntent();
-        Bundle ticketData = intent.getBundleExtra("ticketData");
-        if (ticketData != null) {
-            type = ticketData.getInt("type");
-            licensePlate = ticketData.getString("licensePlate");
+        // Initialize the camera selector early
+        cameraSelector = new CameraSelector.Builder()
+                .requireLensFacing(currentCameraSelector)
+                .build();
 
-//            Toast.makeText(ScanPersonActivity.this, "type: " + type + " - LicensePale " + licensePlate, Toast.LENGTH_SHORT).show();
+        // Get intent data
+        extractIntentData();
 
-        }
-
-
-        // Khởi tạo SessionManager
+        // Initialize SessionManager
         sessionManager = new SessionManager(this);
 
+        // Initialize views and setup UI
         initializeViews();
         setupWindowInsets();
+        setupButtons();
 
+        // Request permissions if needed
         if (allPermissionsGranted()) {
             startCamera();
         } else {
             ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS);
         }
+    }
 
-        setupButtons();
+    private void extractIntentData() {
+        Intent intent = getIntent();
+        Bundle ticketData = intent.getBundleExtra("ticketData");
+        if (ticketData != null) {
+            type = ticketData.getInt("type");
+            licensePlate = ticketData.getString("licensePlate");
+        }
     }
 
     private void initializeViews() {
         previewView = findViewById(R.id.previewView);
         btnCaptureFace = findViewById(R.id.btnCaptureFace);
-        btnConfirmFace = findViewById(R.id.btnConfirmFace);
+        btnSwitchCamera = findViewById(R.id.btnSwitchCamera);
         btnBack = findViewById(R.id.btnBack);
-
-        // Vô hiệu hóa nút xác nhận ban đầu
-        btnConfirmFace.setEnabled(false);
     }
 
     private void setupWindowInsets() {
@@ -134,34 +131,24 @@ public class ScanPersonActivity extends AppCompatActivity {
 
     private void setupButtons() {
         btnCaptureFace.setOnClickListener(v -> captureImage());
-
-        btnConfirmFace.setOnClickListener(v -> {
-            if (savedImageUri != null) {
-                // Vô hiệu hóa nút trong khi đang xử lý
-                btnConfirmFace.setEnabled(false);
-
-                // Kiểm tra token trước khi gửi
-                if (!sessionManager.isLoggedIn()) {
-                    Toast.makeText(this, "Bạn chưa đăng nhập hoặc phiên đăng nhập đã hết hạn", Toast.LENGTH_LONG).show();
-                    // Chuyển về màn hình đăng nhập
-                    navigateToLogin();
-                    return;
-                }
-
-                sendImageToApi(savedImageUri);
-            } else {
-                Toast.makeText(this, "Vui lòng chụp ảnh trước", Toast.LENGTH_SHORT).show();
-            }
-        });
-
         btnBack.setOnClickListener(v -> finish());
+        btnSwitchCamera.setOnClickListener(v -> switchCamera());
+    }
+
+    private void switchCamera() {
+        currentCameraSelector = (currentCameraSelector == CameraSelector.LENS_FACING_BACK)
+                ? CameraSelector.LENS_FACING_FRONT
+                : CameraSelector.LENS_FACING_BACK;
+
+        cameraSelector = new CameraSelector.Builder()
+                .requireLensFacing(currentCameraSelector)
+                .build();
+
+        startCamera();
     }
 
     private void navigateToLogin() {
-        // Xóa session hiện tại
         sessionManager.clearSession();
-
-        // Chuyển về màn hình đăng nhập
         Intent intent = new Intent(ScanPersonActivity.this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
@@ -175,64 +162,46 @@ public class ScanPersonActivity extends AppCompatActivity {
             try {
                 ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
 
-                // Thiết lập preview camera
+                // Setup preview
                 Preview preview = new Preview.Builder().build();
                 preview.setSurfaceProvider(previewView.getSurfaceProvider());
 
-                // Thiết lập image capture
+                // Setup image capture
                 imageCapture = new ImageCapture.Builder()
                         .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
                         .build();
 
-                // Thử sử dụng camera trước, nếu không có thì dùng camera sau
-                CameraSelector cameraSelector;
-                try {
-                    cameraSelector = new CameraSelector.Builder()
-                            .requireLensFacing(CameraSelector.LENS_FACING_FRONT)
-                            .build();
-
-                    // Kiểm tra xem có thể sử dụng camera trước không
-                    if (!cameraProvider.hasCamera(cameraSelector)) {
-                        Log.w(TAG, "Camera trước không khả dụng, chuyển sang camera sau");
-                        cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
-                    }
-                } catch (Exception e) {
-                    Log.w(TAG, "Không thể sử dụng camera trước: " + e.getMessage());
-                    cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
-                }
-
-                // Xóa use cases trước khi gắn mới
+                // Unbind previous use cases before binding new ones
                 cameraProvider.unbindAll();
 
-                // Gắn use cases vào camera
+                // Bind use cases to camera
                 cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture);
-                Log.d(TAG, "Camera được khởi tạo thành công");
+                Log.d(TAG, "Camera initialized successfully");
 
             } catch (ExecutionException | InterruptedException e) {
-                Log.e(TAG, "Lỗi khi khởi động camera: ", e);
-                Toast.makeText(ScanPersonActivity.this,
-                        "Không thể khởi động camera: " + e.getMessage(),
-                        Toast.LENGTH_SHORT).show();
+                handleCameraError("Error starting camera: " + e.getMessage(), e);
             } catch (IllegalArgumentException e) {
-                Log.e(TAG, "Không thể tìm thấy camera phù hợp: ", e);
-                Toast.makeText(ScanPersonActivity.this,
-                        "Không tìm thấy camera phù hợp trên thiết bị",
-                        Toast.LENGTH_SHORT).show();
+                handleCameraError("No suitable camera found on device", e);
             }
         }, ContextCompat.getMainExecutor(this));
     }
 
+    private void handleCameraError(String message, Exception e) {
+        Log.e(TAG, message, e);
+        Toast.makeText(ScanPersonActivity.this, message, Toast.LENGTH_SHORT).show();
+    }
+
     private void captureImage() {
         if (imageCapture == null) {
-            Toast.makeText(this, "Camera chưa sẵn sàng", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Camera not ready", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Tạo tên file dựa trên timestamp
+        // Create filename based on timestamp
         String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(System.currentTimeMillis());
         String fileName = "FACE_" + timestamp + ".jpg";
 
-        // Thiết lập output options
+        // Setup output options
         ContentValues contentValues = new ContentValues();
         contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName);
         contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg");
@@ -243,151 +212,163 @@ public class ScanPersonActivity extends AppCompatActivity {
                 contentValues
         ).build();
 
-        // Hiển thị thông báo đang chụp
-        Toast.makeText(ScanPersonActivity.this, "Đang chụp ảnh...", Toast.LENGTH_SHORT).show();
+        // Show capturing notification
+        Toast.makeText(ScanPersonActivity.this, "Capturing image...", Toast.LENGTH_SHORT).show();
 
-        // Chụp ảnh
+        // Take picture
         imageCapture.takePicture(outputOptions, executor, new ImageCapture.OnImageSavedCallback() {
             @Override
             public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
                 savedImageUri = outputFileResults.getSavedUri();
 
                 runOnUiThread(() -> {
-                    Toast.makeText(ScanPersonActivity.this, "Đã chụp ảnh thành công", Toast.LENGTH_SHORT).show();
-                    btnConfirmFace.setEnabled(true);
+                    Toast.makeText(ScanPersonActivity.this, "Image captured successfully", Toast.LENGTH_SHORT).show();
+                    // Automatically process the image after capture
+                    if (savedImageUri != null) {
+                        processAndSendImage(savedImageUri);
+                    }
                 });
             }
 
             @Override
             public void onError(@NonNull ImageCaptureException exception) {
                 runOnUiThread(() -> {
-                    Toast.makeText(ScanPersonActivity.this, "Lỗi khi chụp ảnh: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ScanPersonActivity.this, "Error capturing image: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
                 });
-                Log.e(TAG, "Lỗi khi chụp ảnh: ", exception);
+                Log.e(TAG, "Error capturing image: ", exception);
             }
         });
     }
 
+    private void processAndSendImage(Uri imageUri) {
+        // Check login status before sending
+        if (!sessionManager.isLoggedIn()) {
+            Toast.makeText(this, "You are not logged in or your session has expired", Toast.LENGTH_LONG).show();
+            navigateToLogin();
+            return;
+        }
+
+        // Send image to API
+        sendImageToApi(imageUri);
+    }
+
     private void sendImageToApi(Uri imageUri) {
         try {
-            // Lấy file từ URI và nén ảnh để giảm kích thước
+            // Compress image to reduce size
             File compressedImageFile = compressImage(imageUri);
 
             if (compressedImageFile == null || !compressedImageFile.exists()) {
-                Toast.makeText(this, "Không thể xử lý ảnh", Toast.LENGTH_SHORT).show();
-                btnConfirmFace.setEnabled(true);
+                Toast.makeText(this, "Could not process image", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            Log.d(TAG, "Kích thước ảnh sau khi nén: " + compressedImageFile.length() + " bytes");
+            Log.d(TAG, "Compressed image size: " + compressedImageFile.length() + " bytes");
 
-            // Tạo OkHttpClient với timeout tăng lên
+            // Create OkHttpClient with increased timeout
             OkHttpClient okHttpClient = new OkHttpClient.Builder()
                     .connectTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
                     .readTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
                     .writeTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
                     .build();
 
-            // Lấy API service từ ApiClient
+            // Get API service from ApiClient
             ApiService apiService = ApiClient.getClient(this).create(ApiService.class);
 
-            // Tạo request body với file ảnh đã nén
+            // Create request body with compressed image file
             RequestBody requestBody = RequestBody.create(MediaType.parse("image/jpeg"), compressedImageFile);
             MultipartBody.Part filePart = MultipartBody.Part.createFormData(
-                    "image",  // Tên tham số trong API
+                    "image",  // API parameter name
                     compressedImageFile.getName(),
                     requestBody
             );
 
-            // Hiển thị thông báo loading
-            Toast.makeText(this, "Đang xử lý nhận diện khuôn mặt...", Toast.LENGTH_LONG).show();
+            // Show loading notification
+            Toast.makeText(this, "Processing facial recognition...", Toast.LENGTH_LONG).show();
 
-            // Gọi API
+            // Call API
             Call<Person> call = apiService.identifyFace(filePart);
 
-            // Thực hiện gọi API bất đồng bộ
+            // Execute API call asynchronously
             call.enqueue(new Callback<Person>() {
                 @Override
                 public void onResponse(Call<Person> call, Response<Person> response) {
-                    // Kích hoạt lại nút xác nhận
-                    btnConfirmFace.setEnabled(true);
-
                     if (response.isSuccessful() && response.body() != null) {
                         Person result = response.body();
-                        Log.d(TAG, "Kết quả nhận diện: " + result.toString());
+                        Log.d(TAG, "Recognition result: " + result.toString());
 
-                        // Xử lý kết quả trả về từ API ở đây
+                        // Process result from API
                         handleFaceRecognitionResult(result);
                     } else {
-                        String errorMessage = "Lỗi từ server: " + response.code();
-                        try {
-                            if (response.errorBody() != null) {
-                                errorMessage += " - " + response.errorBody().string();
-                            }
-                        } catch (Exception e) {
-                            Log.e(TAG, "Không thể đọc lỗi response: ", e);
-                        }
-
-                        // Kiểm tra nếu lỗi liên quan đến xác thực
-                        if (response.code() == 401 || response.code() == 403) {
-                            Toast.makeText(ScanPersonActivity.this,
-                                    "Phiên đăng nhập hết hạn, vui lòng đăng nhập lại",
-                                    Toast.LENGTH_LONG).show();
-                            navigateToLogin();
-                            return;
-                        }
-
-                        Toast.makeText(ScanPersonActivity.this, errorMessage, Toast.LENGTH_LONG).show();
-                        Log.e(TAG, errorMessage);
+                        handleApiError(response);
                     }
                 }
 
                 @Override
                 public void onFailure(Call<Person> call, Throwable t) {
-                    // Kích hoạt lại nút xác nhận
-                    btnConfirmFace.setEnabled(true);
-
-                    String errorMessage = "Lỗi kết nối: " + t.getMessage();
-                    Toast.makeText(ScanPersonActivity.this, errorMessage, Toast.LENGTH_LONG).show();
-                    Log.e(TAG, "Lỗi khi gọi API: ", t);
-
-                    // Kiểm tra các lỗi cụ thể
-                    if (t.getMessage() != null && t.getMessage().contains("timeout")) {
-                        Toast.makeText(ScanPersonActivity.this,
-                                "Kết nối tới máy chủ bị timeout. Vui lòng kiểm tra kết nối mạng và thử lại sau.",
-                                Toast.LENGTH_LONG).show();
-                    }
-
-                    if (t.getMessage() != null &&
-                            (t.getMessage().contains("jwt") || t.getMessage().contains("token") ||
-                                    t.getMessage().contains("Unauthorized"))) {
-                        Toast.makeText(ScanPersonActivity.this,
-                                "Lỗi xác thực. Vui lòng đăng nhập lại.",
-                                Toast.LENGTH_LONG).show();
-                        navigateToLogin();
-                    }
+                    handleApiFailure(t);
                 }
             });
         } catch (Exception e) {
-            // Kích hoạt lại nút xác nhận
-            btnConfirmFace.setEnabled(true);
-
-            Toast.makeText(this, "Lỗi xử lý: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "Lỗi khi gửi ảnh lên API: ", e);
+            Toast.makeText(this, "Processing error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Error sending image to API: ", e);
         }
     }
 
-    // Phương thức nén ảnh để giảm kích thước
+    private void handleApiError(Response<Person> response) {
+        String errorMessage = "Server error: " + response.code();
+        try {
+            if (response.errorBody() != null) {
+                errorMessage += " - " + response.errorBody().string();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Could not read error response: ", e);
+        }
+
+        // Check if error is related to authentication
+        if (response.code() == 401 || response.code() == 403) {
+            Toast.makeText(ScanPersonActivity.this,
+                    "Session expired, please log in again",
+                    Toast.LENGTH_LONG).show();
+            navigateToLogin();
+            return;
+        }
+
+        Toast.makeText(ScanPersonActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+        Log.e(TAG, errorMessage);
+    }
+
+    private void handleApiFailure(Throwable t) {
+        String errorMessage = "Connection error: " + t.getMessage();
+        Toast.makeText(ScanPersonActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+        Log.e(TAG, "Error calling API: ", t);
+
+        // Check for specific errors
+        if (t.getMessage() != null && t.getMessage().contains("timeout")) {
+            Toast.makeText(ScanPersonActivity.this,
+                    "Connection to server timed out. Please check your network connection and try again.",
+                    Toast.LENGTH_LONG).show();
+        }
+
+        if (t.getMessage() != null &&
+                (t.getMessage().contains("jwt") || t.getMessage().contains("token") ||
+                        t.getMessage().contains("Unauthorized"))) {
+            Toast.makeText(ScanPersonActivity.this,
+                    "Authentication error. Please log in again.",
+                    Toast.LENGTH_LONG).show();
+            navigateToLogin();
+        }
+    }
+
     private File compressImage(Uri imageUri) {
         try {
-            // Đọc bitmap từ URI
+            // Read bitmap from URI
             Bitmap originalBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
 
-            // Tạo file tạm thời để lưu ảnh đã nén
+            // Create temporary file to save compressed image
             File outputDir = getCacheDir();
             File outputFile = File.createTempFile("compressed_", ".jpg", outputDir);
 
-            // Nén ảnh với chất lượng giảm dần cho đến khi đạt kích thước mong muốn
+            // Compress image with decreasing quality until desired size is reached
             int quality = JPEG_QUALITY;
             boolean fileSizeOk = false;
 
@@ -395,102 +376,96 @@ public class ScanPersonActivity extends AppCompatActivity {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 originalBitmap.compress(Bitmap.CompressFormat.JPEG, quality, baos);
 
-                // Ghi ra file
+                // Write to file
                 try (FileOutputStream fos = new FileOutputStream(outputFile)) {
                     fos.write(baos.toByteArray());
                 }
 
-                // Kiểm tra kích thước file
+                // Check file size
                 if (outputFile.length() <= MAX_IMAGE_SIZE) {
                     fileSizeOk = true;
                 } else {
-                    // Giảm chất lượng nếu file vẫn còn lớn
+                    // Decrease quality if file is still too large
                     quality -= 10;
                 }
             }
 
-            // Nếu vẫn còn lớn, thử giảm độ phân giải
+            // If still too large, try reducing resolution
             if (!fileSizeOk) {
-                // Tính toán tỷ lệ scale
-                float scale = 0.8f; // Giảm 20% kích thước
+                // Calculate scale ratio
+                float scale = 0.8f; // Reduce by 20%
 
-                // Scale ảnh
+                // Scale image
                 int width = Math.round(originalBitmap.getWidth() * scale);
                 int height = Math.round(originalBitmap.getHeight() * scale);
 
                 Bitmap scaledBitmap = Bitmap.createScaledBitmap(originalBitmap, width, height, true);
 
-                // Nén lại với chất lượng ban đầu
+                // Compress again with initial quality
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 scaledBitmap.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, baos);
 
-                // Ghi ra file
+                // Write to file
                 try (FileOutputStream fos = new FileOutputStream(outputFile)) {
                     fos.write(baos.toByteArray());
                 }
             }
 
-            Log.d(TAG, "Ảnh đã được nén: " + outputFile.length() + " bytes");
+            Log.d(TAG, "Image compressed: " + outputFile.length() + " bytes");
             return outputFile;
 
         } catch (IOException e) {
-            Log.e(TAG, "Lỗi khi nén ảnh: ", e);
+            Log.e(TAG, "Error compressing image: ", e);
             return null;
         }
     }
 
     private void handleFaceRecognitionResult(Person result) {
-        // Xử lý kết quả nhận diện khuôn mặt
-        Toast.makeText(this, "Nhận diện thành công: " + result.getFullName(), Toast.LENGTH_SHORT).show();
+        // Process face recognition result
+        Toast.makeText(this, "Recognition successful: " + result.getFullName(), Toast.LENGTH_SHORT).show();
 
-        // Kiểm tra dữ liệu nhận được
+        // Check received data
         if (result.getId() == null || result.getId().isEmpty()) {
-            Toast.makeText(this, "Không nhận được ID người dùng", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "User ID not received", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (type == 3) {
-            Bundle bundle = new Bundle();
-            bundle.putString("id", result.getId());
-            bundle.putString("fullName", result.getFullName());
-            bundle.putLong("birthDate", result.getBirthDate());
-            bundle.putString("gender", result.getGender());
-            bundle.putString("address", result.getAddress());
-            bundle.putString("phoneNumber", result.getPhoneNumber());
-            bundle.putString("facePath", result.getFacePath());
-            Intent intent = new Intent(ScanPersonActivity.this, PersonInfoActivity.class);
-            intent.putExtra("result", bundle);
-            startActivity(intent);
+            // Person info flow
+            navigateToPersonInfo(result);
         } else {
-            // Tạo Bundle chứa thông tin cần thiết
-            Bundle ticketData = new Bundle();
-            ticketData.putInt("type", type);
-            ticketData.putString("licensePlate", licensePlate);
-            ticketData.putString("driverCCCD", result.getId());
-            ticketData.putString("driverName", result.getFullName());
-
-            // Chuyển sang màn hình tạo biên bản
-            Intent intent = new Intent(ScanPersonActivity.this, CreateTicketActivity.class);
-            intent.putExtra("ticketData", ticketData);
-            startActivity(intent);
-
+            // Ticket creation flow
+            navigateToCreateTicket(result);
         }
-
-
     }
 
-    // Phương thức lấy đường dẫn thực từ URI
-    private String getRealPathFromURI(Uri contentUri) {
-        String[] proj = {MediaStore.Images.Media.DATA};
-        android.database.Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
-        if (cursor == null) return contentUri.getPath();
+    private void navigateToPersonInfo(Person result) {
+        Bundle bundle = new Bundle();
+        bundle.putString("id", result.getId());
+        bundle.putString("fullName", result.getFullName());
+        bundle.putLong("birthDate", result.getBirthDate());
+        bundle.putString("gender", result.getGender());
+        bundle.putString("address", result.getAddress());
+        bundle.putString("phoneNumber", result.getPhoneNumber());
+        bundle.putString("facePath", result.getFacePath());
 
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        String path = cursor.getString(column_index);
-        cursor.close();
+        Intent intent = new Intent(ScanPersonActivity.this, PersonInfoActivity.class);
+        intent.putExtra("result", bundle);
+        startActivity(intent);
+    }
 
-        return path;
+    private void navigateToCreateTicket(Person result) {
+        // Create Bundle with required information
+        Bundle ticketData = new Bundle();
+        ticketData.putInt("type", type);
+        ticketData.putString("licensePlate", licensePlate);
+        ticketData.putString("driverCCCD", result.getId());
+        ticketData.putString("driverName", result.getFullName());
+
+        // Navigate to ticket creation screen
+        Intent intent = new Intent(ScanPersonActivity.this, CreateTicketActivity.class);
+        intent.putExtra("ticketData", ticketData);
+        startActivity(intent);
     }
 
     private boolean allPermissionsGranted() {
@@ -509,7 +484,7 @@ public class ScanPersonActivity extends AppCompatActivity {
             if (allPermissionsGranted()) {
                 startCamera();
             } else {
-                Toast.makeText(this, "Cần cấp quyền truy cập camera để sử dụng tính năng này", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Camera permission required for this feature", Toast.LENGTH_SHORT).show();
                 finish();
             }
         }

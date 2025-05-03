@@ -50,7 +50,7 @@ public class FindLicensePlateActivity extends AppCompatActivity {
     private CircleImageView userAvatar;
 
 
-    private void showCustomVehicleTypeDialog() {
+    private void showCustomVehicleTypeDialog(int DialogType) {
         // Tạo dialog với custom layout
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -74,12 +74,20 @@ public class FindLicensePlateActivity extends AppCompatActivity {
 
         // Set sự kiện click cho các lựa chọn
         carOption.setOnClickListener(v -> {
-            performVehicleLookup("Xe ô tô");
+            if (DialogType == 1) {
+                performVehicleLookup("Xe ô tô");
+            } else {
+                LogicDialogScan(1);
+            }
             dialog.dismiss();
         });
 
         motorcycleOption.setOnClickListener(v -> {
-            performVehicleLookup("Xe máy");
+            if (DialogType == 1) {
+                performVehicleLookup("Xe máy");
+            } else {
+                LogicDialogScan(2);
+            }
             dialog.dismiss();
         });
 
@@ -89,6 +97,14 @@ public class FindLicensePlateActivity extends AppCompatActivity {
         // Hiển thị dialog
         dialog.show();
     }
+
+    private void LogicDialogScan(int type) {
+
+        Intent intent = new Intent(FindLicensePlateActivity.this, ScanLicensePlateActivity.class);
+        intent.putExtra("type", type);
+        startActivity(intent);
+    }
+
 
     private void performVehicleLookup(String vehicleType) {
         String vehicleInfo = editTextLicensePlate.getText().toString();
@@ -101,8 +117,7 @@ public class FindLicensePlateActivity extends AppCompatActivity {
         vehicleInfo = vehicleInfo.replace("-", "").replace(".", "").replace(" ", "");
         final int type = vehicleType.equals("Xe ô tô") ? 1 :
                 vehicleType.equals("Xe máy") ? 2 : -1;
-        if ( type == -1)
-        {
+        if (type == -1) {
             Toast.makeText(this, "Vui lòng chọn loại phương tiện", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -149,9 +164,7 @@ public class FindLicensePlateActivity extends AppCompatActivity {
                                     public void onResponse(Call<ScanLog> call, Response<ScanLog> response) {
                                         if (response.isSuccessful()) {
                                             startActivity(intent);
-                                        }
-                                        else
-                                        {
+                                        } else {
                                             Toast.makeText(FindLicensePlateActivity.this,
                                                     "Không tìm thấy thông tin xe. Mã lỗi: " + response.code(),
                                                     Toast.LENGTH_SHORT).show();
@@ -200,6 +213,7 @@ public class FindLicensePlateActivity extends AppCompatActivity {
         });
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -241,19 +255,14 @@ public class FindLicensePlateActivity extends AppCompatActivity {
 
     private void setupEventListeners() {
         // Xử lý sự kiện khi nhấn nút "Chụp Ảnh"
-        btnChupAnh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Chuyển sang màn hình Scan_Bike
-                Intent intent = new Intent(FindLicensePlateActivity.this, ScanLicensePlateActivity.class);
-                startActivity(intent);
-            }
+        btnChupAnh.setOnClickListener(v -> {
+            showCustomVehicleTypeDialog(2);
         });
 
         btnTraCuu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showCustomVehicleTypeDialog();
+                showCustomVehicleTypeDialog(1);
             }
         });
 

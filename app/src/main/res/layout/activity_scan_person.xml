@@ -106,17 +106,6 @@
                     app:iconGravity="textStart"
                     app:iconPadding="8dp" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnConfirmFace"
-                    android:layout_width="0dp"
-                    android:layout_height="55dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_weight="1.2"
-                    android:text="Tra Cứu"
-                    android:textAllCaps="false"
-                    android:textSize="16sp"
-                    app:backgroundTint="#4CAF50"
-                    app:cornerRadius="12dp" />
             </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
@@ -133,6 +122,20 @@
         app:layout_constraintTop_toTopOf="parent"
         app:tint="#000000"
         tools:ignore="SpeakableTextPresentCheck" />
+
+    <ImageButton
+        android:id="@+id/btnSwitchCamera"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="16dp"
+        android:background="@drawable/bg_circle_button"
+        android:contentDescription="@string/switch_camera"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_switch_camera"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Tiêu đề overlay -->
     <TextView
