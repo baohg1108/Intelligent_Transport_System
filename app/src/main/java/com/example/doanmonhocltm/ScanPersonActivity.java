@@ -301,11 +301,32 @@ public class ScanPersonActivity extends AppCompatActivity {
                     } else {
                         handleApiError(response);
                     }
+
+                    // Xoá ảnh từ MediaStore sau khi xử lý xong
+                    if (savedImageUri != null) {
+                        getContentResolver().delete(savedImageUri, null, null);
+                        savedImageUri = null;
+                    }
+
+                    // Xoá file nén từ cache
+                    if (compressedImageFile != null && compressedImageFile.exists()) {
+                        compressedImageFile.delete();
+                    }
                 }
 
                 @Override
                 public void onFailure(Call<Person> call, Throwable t) {
                     handleApiFailure(t);
+                    // Xoá ảnh từ MediaStore sau khi xử lý xong
+                    if (savedImageUri != null) {
+                        getContentResolver().delete(savedImageUri, null, null);
+                        savedImageUri = null;
+                    }
+
+                    // Xoá file nén từ cache
+                    if (compressedImageFile != null && compressedImageFile.exists()) {
+                        compressedImageFile.delete();
+                    }
                 }
             });
         } catch (Exception e) {
