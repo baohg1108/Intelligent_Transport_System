@@ -9,7 +9,7 @@
     android:fitsSystemWindows="true"
     tools:context=".PersonInfoActivity">
 
-    <!-- User Profile Section - Giữ nguyên -->
+    <!-- User Profile Section -->
     <LinearLayout
         android:id="@+id/userProfileContainer"
         android:layout_width="0dp"
@@ -30,8 +30,9 @@
             android:src="@android:drawable/ic_menu_myplaces" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="vertical">
 
             <TextView
@@ -39,9 +40,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Trần Thị B"
+                android:textColor="#000000"
                 android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="#000000" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/userPosition"
@@ -53,7 +54,7 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Scrollable content - Thiết kế lại -->
+    <!-- Scrollable content -->
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollContent"
         android:layout_width="0dp"
@@ -90,9 +91,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="#3D5AFE"
-                        android:padding="16dp"
                         android:gravity="center_vertical"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:padding="16dp">
 
                         <ImageView
                             android:layout_width="24dp"
@@ -130,9 +131,9 @@
                                 android:layout_width="180dp"
                                 android:layout_height="220dp"
                                 android:layout_gravity="center"
+                                android:background="#EEEEEE"
                                 android:scaleType="centerCrop"
-                                android:src="@android:drawable/ic_menu_gallery"
-                                android:background="#EEEEEE" />
+                                android:src="@android:drawable/ic_menu_gallery" />
                         </FrameLayout>
 
                         <LinearLayout
@@ -157,8 +158,9 @@
 
                                 <TextView
                                     android:id="@+id/tvPersonId"
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
+                                    android:layout_weight="1"
                                     android:textColor="#212121" />
                             </LinearLayout>
 
@@ -177,8 +179,9 @@
 
                                 <TextView
                                     android:id="@+id/tvFullName"
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
+                                    android:layout_weight="1"
                                     android:textColor="#212121" />
                             </LinearLayout>
 
@@ -197,8 +200,9 @@
 
                                 <TextView
                                     android:id="@+id/tvBirthDate"
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
+                                    android:layout_weight="1"
                                     android:textColor="#212121" />
                             </LinearLayout>
 
@@ -217,8 +221,9 @@
 
                                 <TextView
                                     android:id="@+id/tvGender"
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
+                                    android:layout_weight="1"
                                     android:textColor="#212121" />
                             </LinearLayout>
 
@@ -237,8 +242,9 @@
 
                                 <TextView
                                     android:id="@+id/tvAddress"
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
+                                    android:layout_weight="1"
                                     android:textColor="#212121" />
                             </LinearLayout>
 
@@ -256,18 +262,55 @@
 
                                 <TextView
                                     android:id="@+id/tvPhoneNumber"
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
+                                    android:layout_weight="1"
                                     android:textColor="#212121" />
                             </LinearLayout>
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
+
+            <!--             Driver License List Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerViewDriverLicenses"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clipToPadding="false"
+                        android:nestedScrollingEnabled="false"
+                        android:padding="8dp"
+                        tools:ignore="SpeakableTextPresentCheck" />
+
+                    <!-- Empty state for list -->
+                    <TextView
+                        android:id="@+id/tvEmptyLicenses"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="24dp"
+                        android:text="Không có bằng lái xe nào"
+                        android:textColor="#F44336"
+                        android:textSize="16sp"
+                        android:visibility="gone" />
+                </FrameLayout>
+            </androidx.cardview.widget.CardView>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Bottom Navigation - Giữ nguyên -->
+    <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"

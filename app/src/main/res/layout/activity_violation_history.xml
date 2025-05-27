@@ -226,7 +226,7 @@
                             android:id="@+id/tvViolationCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="12"
+                            android:text="0"
                             android:textColor="#D32F2F"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -247,7 +247,7 @@
                             android:id="@+id/tvTotalFine"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="18,400,000 VNĐ"
+                            android:text="0 VNĐ"
                             android:textColor="#D32F2F"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -267,7 +267,6 @@
                             android:id="@+id/tvCommonViolation"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Không đội mũ bảo hiểm"
                             android:textStyle="italic" />
                     </LinearLayout>
                 </LinearLayout>

@@ -3,6 +3,7 @@ package com.example.doanmonhocltm.callapi;
 
 import com.example.doanmonhocltm.model.Car;
 import com.example.doanmonhocltm.model.CarViolationReport;
+import com.example.doanmonhocltm.model.DriverLicense;
 import com.example.doanmonhocltm.model.LoginHistory;
 import com.example.doanmonhocltm.model.LoginRequest;
 import com.example.doanmonhocltm.model.Logout;
@@ -37,18 +38,11 @@ public interface ApiService {
     @GET("quet/api/vehicles/cars/{licensePlate}")
     Call<Car> getCarByLicensePlate(@Path("licensePlate") String licensePlate);
 
-    // ___________________________________________________________________________
     @GET("quet/api/vehicles/motorcycles/{licensePlate}")
     Call<Vehicles> getMotorcycle(@Path("licensePlate") String licensePlate);
 
     @GET("quet/api/vehicles/cars/{licensePlate}")
     Call<Vehicles> getCar(@Path("licensePlate") String licensePlate);
-
-
-    // ___________________________________________________________________________
-
-    @GET("quet/api/vehicles/motorcycles/{licensePlate}")
-    Call<Motorcycle> getMotorcycleByLicensePlate(@Path("licensePlate") String licensePlate);
 
 
     @Multipart
@@ -92,5 +86,8 @@ public interface ApiService {
     Call<ViolationAll> getCarViolationById(@Path("id") int id);
     @GET("quet/api/motorcycle-violations/{id}")
     Call<ViolationAll> getMotorcycleViolationById(@Path("id") int id);
+    @GET("quet/api/driving-license/person/{personId}")
+    Call<List<DriverLicense>> getDriverLicenseByPersonId(@Path("personId") String personId);
+
 }
 
