@@ -31,8 +31,11 @@ public class ApiClient {
 
 
             // Cấu hình OkHttpClient với interceptor
-            OkHttpClient client = new OkHttpClient.Builder().addInterceptor(loggingInterceptor)  // Thêm interceptor vào client
-                    .addInterceptor(new AuthInterceptor(sessionManager)).connectTimeout(3, TimeUnit.MINUTES)  // Chờ kết nối tới 3 phút
+            OkHttpClient client = new OkHttpClient
+                    .Builder()
+                    .addInterceptor(loggingInterceptor)  // Thêm interceptor vào client
+                    .addInterceptor(new AuthInterceptor(sessionManager))
+                    .connectTimeout(3, TimeUnit.MINUTES)  // Chờ kết nối tới 3 phút
                     .readTimeout(3, TimeUnit.MINUTES)     // Chờ đọc dữ liệu tới 3 phút
                     .writeTimeout(3, TimeUnit.MINUTES)    // Chờ ghi dữ liệu tới 3 phút// Interceptor của bạn
                     .build();
