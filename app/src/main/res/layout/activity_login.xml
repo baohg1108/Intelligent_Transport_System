@@ -38,11 +38,11 @@
                 android:src="@mipmap/ic_logo" />
 
             <TextView
-                android:id="@+id/textTitle"
+                android:id="@+id/txtLogin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
-                android:text="Đăng Nhập Hệ Thống"
+                android:text="Đăng Nhập"
                 android:textColor="#212121"
                 android:textSize="22sp"
                 android:textStyle="bold" />
@@ -59,7 +59,7 @@
                 app:startIconDrawable="@android:drawable/ic_menu_myplaces">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edtUsername"
+                    android:id="@+id/txtUsername"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPersonName" />
@@ -79,7 +79,7 @@
                 app:startIconDrawable="@android:drawable/ic_lock_idle_lock">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edtPassword"
+                    android:id="@+id/txtPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword" />

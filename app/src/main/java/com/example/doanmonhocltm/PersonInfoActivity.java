@@ -22,7 +22,6 @@ import com.example.doanmonhocltm.adapter.DriverLicenseAdapter;
 import com.example.doanmonhocltm.callapi.ApiClient;
 import com.example.doanmonhocltm.callapi.ApiService;
 import com.example.doanmonhocltm.callapi.SessionManager;
-import com.example.doanmonhocltm.model.DriverLicense;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.IOException;

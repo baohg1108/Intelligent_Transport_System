@@ -19,11 +19,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.doanmonhocltm.callapi.ApiClient;
 import com.example.doanmonhocltm.callapi.ApiService;
 import com.example.doanmonhocltm.callapi.SessionManager;
-import com.example.doanmonhocltm.model.LoginHistory;
 import com.example.doanmonhocltm.model.LoginRequest;
-import com.example.doanmonhocltm.model.Person;
-import com.example.doanmonhocltm.model.ResultLogin;
-import com.example.doanmonhocltm.model.User;
 import com.example.doanmonhocltm.util.DeviceUtil;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -71,8 +67,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        this.edtUsername = findViewById(R.id.edtUsername);
-        this.edtPassword = findViewById(R.id.edtPassword);
+        this.edtUsername = findViewById(R.id.txtUsername);
+        this.edtPassword = findViewById(R.id.txtPassword);
         this.btnLogin = findViewById(R.id.btnLogin);
         this.progressBar = findViewById(R.id.progressBar);
     }

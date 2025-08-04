@@ -1,20 +1,8 @@
 // ApiService.java
 package com.example.doanmonhocltm.callapi;
 
-import com.example.doanmonhocltm.model.Car;
-import com.example.doanmonhocltm.model.CarViolationReport;
-import com.example.doanmonhocltm.model.DriverLicense;
-import com.example.doanmonhocltm.model.LoginHistory;
 import com.example.doanmonhocltm.model.LoginRequest;
 import com.example.doanmonhocltm.model.Logout;
-import com.example.doanmonhocltm.model.Motorcycle;
-import com.example.doanmonhocltm.model.MotorcycleViolationReport;
-import com.example.doanmonhocltm.model.Person;
-import com.example.doanmonhocltm.model.ResultLogin;
-import com.example.doanmonhocltm.model.ScanLog;
-import com.example.doanmonhocltm.model.User;
-import com.example.doanmonhocltm.model.Vehicles;
-import com.example.doanmonhocltm.model.ViolationAll;
 
 
 import java.util.List;
