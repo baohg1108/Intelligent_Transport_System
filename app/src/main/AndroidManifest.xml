@@ -2,16 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-feature android:name="android.hardware.camera.any" />
-
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="28" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -23,53 +13,26 @@
         android:theme="@style/Theme.DoAnMonHocLTM"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+
         <activity
-            android:name=".ViolationDetailActivity"
+            android:name=".SettingActivity"
             android:exported="false" />
         <activity
-            android:name=".ViolationHistoryActivity"
+            android:name=".PoliceNoAccidentActivity"
             android:exported="false" />
         <activity
-            android:name=".CreateTicketActivity"
+            android:name=".InformationActivity"
             android:exported="false" />
+
         <activity
-            android:name=".UserInfoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".PersonInfoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".LoginActivity"
+            android:name=".HomeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ScanPersonActivity"
-            android:exported="false" />
-        <activity
-            android:name=".FindPersonActivity"
-            android:exported="false" />
-        <activity
-            android:name=".VehicleInfoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ScanLicensePlateActivity"
-            android:exported="false">
 
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-        </activity>
-        <activity
-            android:name=".FindLicensePlateActivity"
-            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="false" />

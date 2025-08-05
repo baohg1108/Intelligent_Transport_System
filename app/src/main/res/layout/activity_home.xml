@@ -13,6 +13,8 @@
         android:background="#00BCD4"
         android:elevation="4dp"
         android:gravity="center_vertical"
+        android:clickable="true"
+        android:focusable="true"
         android:orientation="horizontal"
         android:padding="16dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -174,7 +176,7 @@
                         <ImageView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
-                            android:src="@drawable/ic_motorcycle" />
+                            android:src="@drawable/ic_car" />
 
                         <TextView
                             android:id="@+id/txtResData"
@@ -340,7 +342,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/btnReports"
+            android:id="@+id/btnInformation"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -367,7 +369,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/btnStatistics"
+            android:id="@+id/btnAccident"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -394,7 +396,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/btnSettings"
+            android:id="@+id/btnSetting"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

@@ -364,7 +364,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottom_navigation_menu" />
+        app:menu="@menu/bottom_navigation_menu"
+        />
 
 
 
@@ -409,7 +410,7 @@
                 android:textSize="12sp" />
         </LinearLayout>
         <LinearLayout
-            android:id="@+id/btnReports"
+            android:id="@+id/btnInformation"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
