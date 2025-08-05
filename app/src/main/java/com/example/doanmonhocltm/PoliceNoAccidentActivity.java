@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
+import android.widget.Button;
 
 import com.example.doanmonhocltm.HomeActivity;
 import com.example.doanmonhocltm.InformationActivity;
@@ -14,13 +15,14 @@ public class PoliceNoAccidentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_police_accident);
+        setContentView(R.layout.activity_police_no_accident);
 
         //find va gan LinearLayout tu XML bang ID
         LinearLayout btnHome = findViewById(R.id.btnHome);
         LinearLayout btnInformation = findViewById(R.id.btnInformation);
         LinearLayout btnAccident = findViewById(R.id.btnAccident);
         LinearLayout btnSetting = findViewById(R.id.btnSetting);
+        Button accidentBtnReportAccident = findViewById(R.id.accidentBtnReportAccident);
 
         //nhấn Home tự chuyển lại Home
         btnHome.setOnClickListener(new View.OnClickListener() {
@@ -59,6 +61,17 @@ public class PoliceNoAccidentActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 Intent intent = new Intent(PoliceNoAccidentActivity.this, SettingActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
+
+        accidentBtnReportAccident.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(PoliceNoAccidentActivity.this, PoliceAccidentActivity.class);
                 startActivity(intent);
             }
         });

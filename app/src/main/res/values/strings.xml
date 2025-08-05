@@ -1,7 +1,18 @@
 <resources>
-    <string name="app_name">Lập Biên Bản</string>
-    <string name="d_li_u_c_b_o_m_t_an_to_n"><![CDATA[Dữ liệu được bảo mật & an toàn]]></string>
-    <string name="nh_p_bi_n_s_xe">Nhập Biển Số Xe</string>
-    <string name="button">Button</string>
-    <string name="switch_camera">Chuyển đổi camera</string>
+    <string name="terms_and_conditions_content">
+        Chào mừng bạn đến với ứng dụng của chúng tôi! Trước khi sử dụng, vui lòng đọc kỹ các điều khoản sau đây:\n\n
+        1. Chấp nhận các Điều khoản:\n
+        Bằng cách sử dụng ứng dụng này, bạn đồng ý tuân thủ và bị ràng buộc bởi các điều khoản và điều kiện này. Nếu bạn không đồng ý với bất kỳ phần nào của các điều khoản này, bạn không được sử dụng ứng dụng.\n\n
+        2. Quyền sở hữu trí tuệ:\n
+        Tất cả nội dung, bao gồm nhưng không giới hạn ở văn bản, đồ họa, logo, biểu tượng, hình ảnh và phần mềm, là tài sản của chúng tôi và được bảo vệ bởi luật bản quyền và các luật sở hữu trí tuệ khác.\n\n
+        3. Giới hạn trách nhiệm:\n
+        Ứng dụng được cung cấp "nguyên trạng". Chúng tôi không chịu trách nhiệm về bất kỳ thiệt hại trực tiếp, gián tiếp, ngẫu nhiên, đặc biệt hoặc do hậu quả nào phát sinh từ việc sử dụng hoặc không thể sử dụng ứng dụng.\n\n
+        4. Bảo mật dữ liệu:\n
+        Chúng tôi cam kết bảo mật thông tin cá nhân của bạn. Dữ liệu của bạn sẽ được sử dụng theo Chính sách quyền riêng tư của chúng tôi.\n\n
+        5. Thay đổi Điều khoản:\n
+        Chúng tôi có quyền thay đổi các điều khoản này vào bất kỳ lúc nào. Các thay đổi sẽ có hiệu lực ngay lập tức khi được đăng tải. Việc bạn tiếp tục sử dụng ứng dụng sau khi các thay đổi được đăng tải đồng nghĩa với việc bạn chấp nhận các điều khoản mới.\n\n
+        6. Liên hệ:\n
+        Nếu có bất kỳ câu hỏi nào về các điều khoản này, vui lòng liên hệ với chúng tôi qua email: baohg2455@gmail.com.\n\n
+        Chân thành cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!
+    </string>
 </resources>

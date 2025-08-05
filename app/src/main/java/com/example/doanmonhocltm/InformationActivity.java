@@ -16,14 +16,14 @@ public class InformationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_information);
 
-        //find va gan LinearLayout tu XML bang ID
+        //get id from .xml
         LinearLayout informationHeader = findViewById(R.id.informationHeader);
         LinearLayout btnHome = findViewById(R.id.btnHome);
         LinearLayout btnInformation = findViewById(R.id.btnInformation);
         LinearLayout btnAccident = findViewById(R.id.btnAccident);
         LinearLayout btnSetting = findViewById(R.id.btnSetting);
 
-        // sủ lý cái phần information đầu (logo, name, ...) nhấn vào qua page Thông tin luôn
+        // xử lý header: nhấn vào chuyển qua page InformationActivity
         informationHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -33,7 +33,7 @@ public class InformationActivity extends AppCompatActivity {
             }
         });
 
-        //nhấn Home tự chuyển lại Home
+        // nhấn quay trở lại HomeActivity
         btnHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -43,7 +43,7 @@ public class InformationActivity extends AppCompatActivity {
             }
         });
 
-        // nhấn Information chuyển Information
+        // nhấn Thông tin vẫn giữa nguyên page  Information
         btnInformation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -54,7 +54,7 @@ public class InformationActivity extends AppCompatActivity {
         });
 
 
-        //nhấn Tai nạn chuyển Tai nạn
+        // chuyển tab tai nạn: mặc địch là chưa có tai nạn
         btnAccident.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -64,7 +64,7 @@ public class InformationActivity extends AppCompatActivity {
             }
         });
 
-        //nhấn cài đăt chuyển cài đặt
+        // chuyển đến cài đặt
         btnSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

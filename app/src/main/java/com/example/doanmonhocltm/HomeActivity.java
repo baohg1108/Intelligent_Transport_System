@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
+import android.widget.Button;
 
 import com.example.doanmonhocltm.InformationActivity;
 import com.example.doanmonhocltm.PoliceNoAccidentActivity;
@@ -16,14 +17,15 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        //find va gan LinearLayout tu XML bang ID
+        //get id from .xml
         LinearLayout informationHeader = findViewById(R.id.informationHeader);
         LinearLayout btnHome = findViewById(R.id.btnHome);
         LinearLayout btnInformation = findViewById(R.id.btnInformation);
         LinearLayout btnAccident = findViewById(R.id.btnAccident);
         LinearLayout btnSetting = findViewById(R.id.btnSetting);
+        Button accidentBtnReportAccident = findViewById(R.id.accidentBtnReportAccident);
 
-        // sủ lý cái phần information đầu (logo, name, ...) nhấn vào qua page Thông tin luôn
+        // process header , auto next page information when click
         informationHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -33,7 +35,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        //nhấn Home tự chuyển lại Home
+        // home
         btnHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -43,7 +45,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        // nhấn Information chuyển Information
+        // next page information
         btnInformation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -54,7 +56,7 @@ public class HomeActivity extends AppCompatActivity {
         });
 
 
-        //nhấn Tai nạn chuyển Tai nạn
+        // next page accident: default là chưa có tai nạn xảy ra nên trang PoliceNoAccidentActivity luôn xuất hiện
         btnAccident.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -64,12 +66,22 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-    //nhấn cài đăt chuyển cài đặt
+    // next page setting
         btnSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 Intent intent = new Intent(HomeActivity.this, SettingActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        // next page PoliceAccidentActivity khi báo cáo có tai nạn
+        accidentBtnReportAccident.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(HomeActivity.this, PoliceAccidentActivity.class);
                 startActivity(intent);
             }
         });

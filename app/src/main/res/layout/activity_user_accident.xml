@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F5F5F5"
-    tools:context=".AccidentActivity">
+    tools:context=".PoliceAccidentActivity">
 
     <TextView
         android:id="@+id/accidentUserHeader"
@@ -118,7 +118,7 @@
             app:strokeColor="#FF5722" />
 
         <Button
-            android:id="@+id/btnSendSignal"
+            android:id="@+id/btnSendSignalCSGT"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
