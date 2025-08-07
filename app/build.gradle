@@ -1,6 +1,8 @@
+
 plugins {
     alias(libs.plugins.android.application)
 }
+
 
 android {
     namespace 'com.example.doanmonhocltm'
@@ -29,6 +31,12 @@ android {
 }
 
 dependencies {
+
+    // gg map
+    implementation 'com.google.android.gms:play-services-maps:18.2.0'
+
+    // dinh vi vi tri chinh minh
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
 
     implementation libs.appcompat
     implementation libs.material
@@ -73,6 +81,5 @@ dependencies {
 
     // Toa do
     implementation 'com.google.android.gms:play-services-location:21.0.1'
-
 
 }

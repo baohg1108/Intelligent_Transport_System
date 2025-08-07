@@ -30,15 +30,14 @@
             android:textColor="#FFFFFF"
             android:textSize="18sp"
             android:textStyle="bold" />
-
     </LinearLayout>
 
     <fragment
-        android:id="@+id/accidentBody"
+        android:id="@+id/accidentMapFragment"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/accidentBody"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/accidentHeader" />
@@ -59,9 +58,10 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding="16dp"
-            android:gravity="center_vertical">
+            android:padding="16dp">
+
             <ImageView
                 android:layout_width="32dp"
                 android:layout_height="32dp"
@@ -79,6 +79,18 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/mapTypeFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/ic_layers"
+        android:backgroundTint="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="@null" />
+
     <Button
         android:id="@+id/accidentBtnReportAccident"
         android:layout_width="0dp"
@@ -92,12 +104,12 @@
         android:textSize="16sp"
         android:textStyle="bold"
         app:cornerRadius="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/accidentBody"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigation"
+        app:layout_constraintEnd_toStartOf="@+id/mapTypeFab"
         app:layout_constraintStart_toStartOf="parent" />
 
     <LinearLayout
-        android:id="@+id/accidentBody"
+        android:id="@+id/bottomNavigation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="#FFFFFF"
