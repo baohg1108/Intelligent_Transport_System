@@ -29,7 +29,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="API_KEY" />
+            android:value="" />
 
         <!-- Google Play Services version -->
         <meta-data
@@ -38,10 +38,10 @@
 
 
         <activity
-            android:name=".AccidentActivity"
+            android:name=".activities.AccidentActivity"
             android:exported="false" />
         <activity
-            android:name=".NoAccidentActivity"
+            android:name=".activities.NoAccidentActivity"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>

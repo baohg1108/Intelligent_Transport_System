@@ -1,4 +1,4 @@
-package com.example.doanmonhocltm;
+package com.example.doanmonhocltm.activities;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -11,12 +11,22 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.doanmonhocltm.models.ApiResponse;
+import com.example.doanmonhocltm.R;
+import com.example.doanmonhocltm.networks.RetrofitApi;
+import com.example.doanmonhocltm.networks.RetrofitClient;
+import com.example.doanmonhocltm.models.StatusUpdateRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+// TODO: THÊM CÁC IMPORT RETROFIT NÀY
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import java.util.Locale;
 
@@ -62,6 +72,7 @@ public class AccidentActivity extends AppCompatActivity implements OnMapReadyCal
         Button btnDecline = findViewById(R.id.btnDecline);
         Button btnAccept = findViewById(R.id.btnAccept);
 
+
         btnDecline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -74,6 +85,39 @@ public class AccidentActivity extends AppCompatActivity implements OnMapReadyCal
         btnAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+
+                // vi du id: 0000001
+                String accidentId = "0000001";
+
+                // update trạng thái là en_route đang đi
+                StatusUpdateRequest statusUpdate = new StatusUpdateRequest("en_route");
+
+                // tạo service + call APi
+                RetrofitApi apiService = RetrofitClient.getRetrofitInstance().create(RetrofitApi.class);
+                Call<ApiResponse> call = apiService.updateAccidentStatus(accidentId, statusUpdate);
+
+                // gửi API async
+                call.enqueue(new Callback<ApiResponse>() {
+                    @Override
+                    public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                        if (response.isSuccessful()) {
+                            Toast.makeText(AccidentActivity.this, "Cập nhật trạng thái thành công!", Toast.LENGTH_SHORT).show();
+
+
+                        } else {
+                            Toast.makeText(AccidentActivity.this, "Lỗi khi cập nhật trạng thái: " + response.code(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ApiResponse> call, Throwable t) {
+                        Toast.makeText(AccidentActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
+
                 if (mMap != null) {
                     // zoom tới vị trí tai nạn
                     LatLng accidentLocation = new LatLng(accidentLatitude, accidentLongitude);
